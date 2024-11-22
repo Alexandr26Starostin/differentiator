@@ -14,6 +14,13 @@
 		break;                               \
 	}
 
+#define WRITE_NAME_OPERATION_(operation, name)     \
+	if (strcmp (name_operation, name) == 0)               \
+	{                                                 \
+		(node -> value).value_op = operation;               \
+		continue;                                    \
+	}
+
 static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str);
 
 //-----------------------------------------------------------------------------------------------------
@@ -151,7 +158,7 @@ static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_in
 		if (str_formula[*ptr_index_str] == ')') {*ptr_index_str += 1;}
 	}
 
-	//------------------------------------------------------------------------------------------------------
+	//------------------------------------------------------------------------------------------------------  
 
 	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
 
@@ -160,6 +167,10 @@ static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_in
 
 	if (strlen (name_operation) == 0)
 	{
+		sscanf (str_formula + *ptr_index_str, "%[0123456789]", name_operation);
+
+		//printf ("%s\n", name_operation);
+
 		node -> type = NUM;
 		(node -> value).value_num = strtod (name_operation, NULL);
 
@@ -171,6 +182,8 @@ static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_in
 
 		if (strchr (name_operation, '(') == NULL)   //VAR
 		{
+			//printf ("%s\n", name_operation);
+
 			node -> type = VAR;
 			(node -> value).value_var = str_formula[*ptr_index_str];
 
@@ -180,15 +193,22 @@ static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_in
 		{
 			sscanf (str_formula + *ptr_index_str, "%[^(]", name_operation);
 
+			//printf ("%s\n", name_operation);
+
 			node -> type = OP;
 
-			if (strcmp (name_operation, "+"))
+			for (size_t quantity_operations = 1; quantity_operations == 1; quantity_operations++)
 			{
-				
+				WRITE_NAME_OPERATION_(ADD,  "+");
+				WRITE_NAME_OPERATION_(SUB,  "-");
+				WRITE_NAME_OPERATION_(MUL,  "*");
+				WRITE_NAME_OPERATION_(DIV,  "/");
+				WRITE_NAME_OPERATION_(SIN,  "sin");
+				WRITE_NAME_OPERATION_(COS,  "cos");
+				WRITE_NAME_OPERATION_(SH,   "sh");
+				WRITE_NAME_OPERATION_(CH,   "ch");
+				WRITE_NAME_OPERATION_(SQRT, "sqrt");
 			}
-
-
-
 
 			*ptr_index_str += strlen (name_operation);
 		}

@@ -67,11 +67,13 @@ static diff_error_t print_edge (node_t* node, FILE* file_diff)
 		case NUM:
 		{
 			fprintf (file_diff, "node_%p [shape=record, label = \"{%lg| {type = %d (NUM) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"blue\"]\n\n\t", node, (node -> value).value_num, node -> type, node -> left, node, node -> parent, node -> right);
+			break;
 		}
 
 		case VAR:
 		{
 			fprintf (file_diff, "node_%p [shape=record, label = \"{%c| {type = %d (VAR) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"yellow\"]\n\n\t", node, (node -> value).value_var, node -> type, node -> left, node, node -> parent, node -> right);
+			break;
 		}
 
 		case OP:
@@ -94,10 +96,12 @@ static diff_error_t print_edge (node_t* node, FILE* file_diff)
 				{
 					printf ("Not find operation = %d", (node -> value).value_op);
 					return NOT_FIND_OP;
+					break;
 				}
 			}
 
 			fprintf (file_diff, "node_%p [shape=record, label = \"{%s| {type = %d (OP) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"#BDEF9E\"]\n\n\t", node, name_operation, node -> type, node -> left, node, node -> parent, node -> right);
+			break;
 		}
 
 		default:
