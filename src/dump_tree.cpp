@@ -62,46 +62,49 @@ static diff_error_t print_edge (node_t* node, FILE* file_diff)
 	assert (node);
 	assert (file_diff);
 
-	if (node -> type == NUM)
+	switch (node -> type)
 	{
-		fprintf (file_diff, "node_%p [shape=record, label = \"{%ld| {type = %d (NUM) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"blue\"]\n\n\t", node, node -> value, node -> type, node -> left, node, node -> parent, node -> right);
-	}
-
-	else if (node -> type == VAR)
-	{
-		fprintf (file_diff, "node_%p [shape=record, label = \"{%c| {type = %d (VAR) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"yellow\"]\n\n\t", node, (char) node -> value, node -> type, node -> left, node, node -> parent, node -> right);
-	}
-
-	else if (node -> type == OP)
-	{
-		const char* name_operation = NULL;
-
-		switch (node -> value)
+		case NUM:
 		{
-			NAME_OPERATION_(ADD,  "+");
-			NAME_OPERATION_(SUB,  "-");
-			NAME_OPERATION_(MUL,  "*");
-			NAME_OPERATION_(DIV,  "/");
-			NAME_OPERATION_(SIN,  "sin");
-			NAME_OPERATION_(COS,  "cos");
-			NAME_OPERATION_(SH,   "sh");
-			NAME_OPERATION_(CH,   "ch");
-			NAME_OPERATION_(SQRT, "sqrt");
-
-			default:
-			{
-				printf ("Not find operation = %ld", node -> value);
-				return NOT_FIND_OP;
-			}
+			fprintf (file_diff, "node_%p [shape=record, label = \"{%lg| {type = %d (NUM) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"blue\"]\n\n\t", node, (node -> value).value_num, node -> type, node -> left, node, node -> parent, node -> right);
 		}
 
-		fprintf (file_diff, "node_%p [shape=record, label = \"{%s| {type = %d (OP) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"#BDEF9E\"]\n\n\t", node, name_operation, node -> type, node -> left, node, node -> parent, node -> right);
-	}
+		case VAR:
+		{
+			fprintf (file_diff, "node_%p [shape=record, label = \"{%c| {type = %d (VAR) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"yellow\"]\n\n\t", node, (node -> value).value_var, node -> type, node -> left, node, node -> parent, node -> right);
+		}
 
-	else 
-	{
-		printf ("type = %d not find\n", node -> type);
-		return NOT_FIND_TYPE_ARG;
+		case OP:
+		{
+			const char* name_operation = NULL;
+
+			switch ((node -> value).value_op)
+			{
+				NAME_OPERATION_(ADD,  "+");
+				NAME_OPERATION_(SUB,  "-");
+				NAME_OPERATION_(MUL,  "*");
+				NAME_OPERATION_(DIV,  "/");
+				NAME_OPERATION_(SIN,  "sin");
+				NAME_OPERATION_(COS,  "cos");
+				NAME_OPERATION_(SH,   "sh");
+				NAME_OPERATION_(CH,   "ch");
+				NAME_OPERATION_(SQRT, "sqrt");
+
+				default:
+				{
+					printf ("Not find operation = %d", (node -> value).value_op);
+					return NOT_FIND_OP;
+				}
+			}
+
+			fprintf (file_diff, "node_%p [shape=record, label = \"{%s| {type = %d (OP) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"#BDEF9E\"]\n\n\t", node, name_operation, node -> type, node -> left, node, node -> parent, node -> right);
+		}
+
+		default:
+		{
+			printf ("type = %d not find\n", node -> type);
+			return NOT_FIND_TYPE_ARG;
+		}
 	}
 
 	if (node -> parent != NULL)

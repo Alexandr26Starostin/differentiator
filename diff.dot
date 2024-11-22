@@ -2,36 +2,6 @@ digraph
 {
 	node[fontsize=9]
 
-	node_0x5b20ceba69c0 [shape=record, label = "{/| {type = 3 (OP) | left = 0x5b20ceba6990 | node = 0x5b20ceba69c0 | parent = (nil) | right = 0x5b20ceba6960}}" style="filled",fillcolor="#BDEF9E"]
+	node_0x5b8f6e2439f0 [shape=record, label = "{/| {type = 3 (OP) | left = 0x5b8f6e2439c0 | node = 0x5b8f6e2439f0 | parent = (nil) | right = 0x5b8f6e243990}}" style="filled",fillcolor="#BDEF9E"]
 
-	node_0x5b20ceba6990 [shape=record, label = "{+| {type = 3 (OP) | left = 0x5b20ceba6930 | node = 0x5b20ceba6990 | parent = 0x5b20ceba69c0 | right = 0x5b20ceba6900}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x5b20ceba69c0 -> node_0x5b20ceba6990
-
-	node_0x5b20ceba6930 [shape=record, label = "{30| {type = 1 (NUM) | left = (nil) | node = 0x5b20ceba6930 | parent = 0x5b20ceba6990 | right = (nil)}}" style="filled",fillcolor="blue"]
-
-	edge[color="black",fontsize=12]
-	node_0x5b20ceba6990 -> node_0x5b20ceba6930
-
-	node_0x5b20ceba6900 [shape=record, label = "{50| {type = 1 (NUM) | left = (nil) | node = 0x5b20ceba6900 | parent = 0x5b20ceba6990 | right = (nil)}}" style="filled",fillcolor="blue"]
-
-	edge[color="black",fontsize=12]
-	node_0x5b20ceba6990 -> node_0x5b20ceba6900
-
-	node_0x5b20ceba6960 [shape=record, label = "{-| {type = 3 (OP) | left = 0x5b20ceba68d0 | node = 0x5b20ceba6960 | parent = 0x5b20ceba69c0 | right = 0x5b20ceba68a0}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x5b20ceba69c0 -> node_0x5b20ceba6960
-
-	node_0x5b20ceba68d0 [shape=record, label = "{12| {type = 1 (NUM) | left = (nil) | node = 0x5b20ceba68d0 | parent = 0x5b20ceba6960 | right = (nil)}}" style="filled",fillcolor="blue"]
-
-	edge[color="black",fontsize=12]
-	node_0x5b20ceba6960 -> node_0x5b20ceba68d0
-
-	node_0x5b20ceba68a0 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x5b20ceba68a0 | parent = 0x5b20ceba6960 | right = (nil)}}" style="filled",fillcolor="yellow"]
-
-	edge[color="black",fontsize=12]
-	node_0x5b20ceba6960 -> node_0x5b20ceba68a0
-
-	}
+	

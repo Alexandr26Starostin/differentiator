@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "const_in_diff.h"
+#include "new_node.h"
 #include "read_and_print_formula.h"
 
 #define NAME_OPERATION_(operation, name) \
@@ -10,6 +13,10 @@
 		name_operation = name;   \
 		break;                               \
 	}
+
+static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str);
+
+//-----------------------------------------------------------------------------------------------------
 
 diff_error_t print_formula (node_t* node)
 {
@@ -33,45 +40,54 @@ diff_error_t print_formula (node_t* node)
 
 	//-------------------------------------------------------------
 
-	if (node -> type == OP)
+	switch (node -> type)
 	{
-		const char* name_operation = NULL;
-
-		switch (node -> value)
+		case NUM:
 		{
-			NAME_OPERATION_(ADD,  "+");
-			NAME_OPERATION_(SUB,  "-");
-			NAME_OPERATION_(DIV,  "/");
-			NAME_OPERATION_(SIN,  "sin");
-			NAME_OPERATION_(COS,  "cos");
-			NAME_OPERATION_(SH,   "sh");
-			NAME_OPERATION_(CH,   "ch");
-			NAME_OPERATION_(SQRT, "sqrt");
-
-			default:
-			{
-				printf ("Not find operation = %ld", node -> value);
-				return NOT_FIND_OP;
-			}
+			printf ("(%lg)", (node -> value).value_num);
+			break;
 		}
 
-		printf ("%s", name_operation);
-	}
-	
-	else if (node -> type == VAR)
-	{
-		printf ("%c", (char) node -> value);
-	}
+		case VAR:
+		{
+			printf ("(%c)", (node -> value).value_var);
+			break;
+		}
 
-	else if (node -> type == NUM)
-	{
-		printf ("%ld", node -> value);
-	}
+		case OP:
+		{
+			const char* name_operation = NULL;
 
-	else 
-	{
-		printf ("type = %d not find\n", node -> type);
-		return NOT_FIND_TYPE_ARG;
+			switch ((node -> value).value_op)
+			{
+				NAME_OPERATION_(ADD,  "+");
+				NAME_OPERATION_(SUB,  "-");
+				NAME_OPERATION_(DIV,  "/");
+				NAME_OPERATION_(MUL,  "*");
+				NAME_OPERATION_(SIN,  "sin");
+				NAME_OPERATION_(COS,  "cos");
+				NAME_OPERATION_(SH,   "sh");
+				NAME_OPERATION_(CH,   "ch");
+				NAME_OPERATION_(SQRT, "sqrt");
+
+				default:
+				{
+					printf ("Not find operation = %d", (node -> value).value_op);
+					return NOT_FIND_OP;
+				}
+			}
+
+			printf ("%s", name_operation);
+
+			break;
+		}
+
+		default:
+		{
+			printf ("type = %d not find\n", node -> type);
+			return NOT_FIND_TYPE_ARG;
+			break;
+		}
 	}
 
 	//-------------------------------------------------------------
@@ -88,6 +104,111 @@ diff_error_t print_formula (node_t* node)
 	if (node -> type == OP)
 	{
 		printf (")");
+	}
+
+	return NOT_ERROR;
+}
+
+//----------------------------------------------------------------------------------------------------------
+
+diff_error_t read_formula (node_t* node)
+{
+	assert (node);
+
+	char str_formula[MAX_LEN_STR_FORMULA] = "";
+
+	printf ("Введите формулу:\n");
+
+	scanf ("%[^'\n']", str_formula);
+	getchar ();
+	//printf ("%s\n", str_formula);
+
+	size_t index_str = 0;
+
+	diff_error_t status = create_tree (node, str_formula, &index_str);
+
+	return status;
+}
+
+static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str)
+{
+	assert (node);
+	assert (str_formula);
+	assert (ptr_index_str);
+
+	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+	if (str_formula[*ptr_index_str] == '(')
+	{
+		
+		*ptr_index_str += 1;
+
+		node -> left = create_new_node (NUM, 0, NULL, NULL, node, __FILE__, __LINE__);
+		create_tree ((node -> left), str_formula, ptr_index_str);
+
+		while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+		if (str_formula[*ptr_index_str] == ')') {*ptr_index_str += 1;}
+	}
+
+	//------------------------------------------------------------------------------------------------------
+
+	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+	char name_operation[MAX_LEN_STR_FORMULA] = "";
+	sscanf (str_formula + *ptr_index_str, "%[^0123456789]", name_operation);
+
+	if (strlen (name_operation) == 0)
+	{
+		node -> type = NUM;
+		(node -> value).value_num = strtod (name_operation, NULL);
+
+		*ptr_index_str += strlen (name_operation);
+	}
+	else
+	{
+		sscanf (str_formula + *ptr_index_str, "%[^)]", name_operation);
+
+		if (strchr (name_operation, '(') == NULL)   //VAR
+		{
+			node -> type = VAR;
+			(node -> value).value_var = str_formula[*ptr_index_str];
+
+			*ptr_index_str += strlen (name_operation); //Временно +1, Но после появления таблицы переменных длина их имён будет произвольной.
+		}
+		else         //OP
+		{
+			sscanf (str_formula + *ptr_index_str, "%[^(]", name_operation);
+
+			node -> type = OP;
+
+			if (strcmp (name_operation, "+"))
+			{
+				
+			}
+
+
+
+
+			*ptr_index_str += strlen (name_operation);
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------------
+
+	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+	if (str_formula[*ptr_index_str] == '(')
+	{
+		
+		*ptr_index_str += 1;
+
+		node -> right = create_new_node (NUM, 0, NULL, NULL, node, __FILE__, __LINE__);
+		create_tree ((node -> right), str_formula, ptr_index_str);
+
+		while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+		if (str_formula[*ptr_index_str] == ')') {*ptr_index_str += 1;}
 	}
 
 	return NOT_ERROR;

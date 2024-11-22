@@ -5,7 +5,7 @@
 #include "const_in_diff.h"
 #include "new_node.h"
 
-node_t* create_new_node (type_arg_t type, long value, node_t* left, node_t* right, node_t* parent, const char* file, int line)
+node_t* create_new_node (type_arg_t type, double value, node_t* left, node_t* right, node_t* parent, const char* file, int line)
 {
 	assert (file);
 
@@ -18,10 +18,37 @@ node_t* create_new_node (type_arg_t type, long value, node_t* left, node_t* righ
 	}
 
 	new_node -> type   = type;
-	new_node -> value  = value;
 	new_node -> left   = left;
 	new_node -> right  = right;
 	new_node -> parent = parent;
+
+	switch (type)
+	{
+		case NUM:
+		{
+			(new_node -> value).value_num  = value;
+			break;
+		}
+
+		case VAR:
+		{
+			(new_node -> value).value_var = (char) value;
+			break;
+		}
+
+		case OP:
+		{
+			(new_node -> value).value_op  = (operation_t) value;
+			break;
+		}
+
+		default:
+		{
+			printf ("type = %d not find\n", type);
+			return NULL;
+			break;
+		}
+	}
 
 	// if (type == VAR)
 	// {

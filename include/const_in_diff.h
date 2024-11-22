@@ -23,9 +23,16 @@ enum operation_t
 	SQRT = 11
 };
 
+union value_t
+{
+	double      value_num;
+	operation_t value_op;
+	char        value_var;
+};
+
 struct node_t
 {
-	long        value;
+	value_t     value;
 	type_arg_t  type;
 	node_t*     left;
 	node_t*     right;
@@ -47,5 +54,6 @@ enum diff_error_t
 };
 
 const size_t INDEX_NUMBER_OF_PICTURE = 36;
+const size_t MAX_LEN_STR_FORMULA     = 70;
 
 #endif
