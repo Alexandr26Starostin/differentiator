@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "const_in_diff.h"
 #include "new_node.h"
@@ -32,7 +33,7 @@ node_t* create_new_node (type_arg_t type, double value, node_t* left, node_t* ri
 
 		case VAR:
 		{
-			(new_node -> value).value_var = (char) value;
+			strcpy ((new_node -> value).value_var, "\0");
 			break;
 		}
 
@@ -49,11 +50,6 @@ node_t* create_new_node (type_arg_t type, double value, node_t* left, node_t* ri
 			break;
 		}
 	}
-
-	// if (type == VAR)
-	// {
-
-	// }
 
 	return new_node;
 }

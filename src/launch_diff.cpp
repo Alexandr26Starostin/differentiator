@@ -5,9 +5,9 @@
 #include "delete_tree.h"
 #include "dump_tree.h"
 #include "read_and_print_formula.h"
+#include "table_of_var.h"
+#include "operations_with_tree.h"
 #include "launch_diff.h"
-
-// static diff_error_t create_table_var ();
 
 diff_error_t launch_diff ()
 {
@@ -21,19 +21,57 @@ diff_error_t launch_diff ()
 
 	if (diff_html == NULL) {printf ("Not find diff.html\n"); return NOT_FIND_DIFF_HTML;}
 
+	//--------------------------------------------------------------------------------------------------------
+
+	table_t table = {};
+
+	status = create_table_var (&table);
+
+	if (status) {fclose (diff_html); delete_table_var (&table); return status;}
+
+	//--------------------------------------------------------------------------------------------------------
+
 	printf ("Привет!)\n");
 
 	node_t* node_1 = create_new_node (NUM, 0, NULL, NULL, NULL, __FILE__, __LINE__);
-	read_formula (node_1);
+	if (node_1 == NULL) {fclose (diff_html); delete_table_var (&table); return NOT_MEMORY_FOR_NEW_NODE;}
 
-	dump_tree (node_1, str_for_system, &index_picture, diff_html);
+	status = read_formula (node_1, &table);
+	if (status) {fclose (diff_html); delete_tree (node_1); delete_table_var (&table); return status;}
+
+	//dump_table_var (&table);
+
+	status = dump_tree (node_1, str_for_system, &index_picture, diff_html);
+	if (status) {fclose (diff_html); delete_tree (node_1); delete_table_var (&table); return status;}
+
+	double number_1 = evaluate_tree (node_1, &table);
+	printf ("number_1 = %lg\n", number_1);
 
 	print_formula (node_1);
-	printf ("\n");
+	printf ("\n\n");
 
-	delete_tree (node_1);
+	double num_1 = calculator (node_1, &table);
+	printf ("num_1 = %lg\n", num_1);
 
-	fclose (diff_html);
+	//---------------------------------------------------------------------------------------------------------------
+
+	node_t* node_2 = create_new_node (NUM, 0, NULL, NULL, NULL, __FILE__, __LINE__);
+	if (node_2 == NULL) {fclose (diff_html); delete_tree (node_1); delete_table_var (&table); return NOT_MEMORY_FOR_NEW_NODE;}
+
+	status = copy_tree (node_1, node_2);
+	if (status) {fclose (diff_html); delete_tree (node_1); delete_tree (node_2); delete_table_var (&table); return status;}
+
+	status = dump_tree (node_2, str_for_system, &index_picture, diff_html);
+	if (status) {fclose (diff_html); delete_tree (node_1); delete_tree (node_2); delete_table_var (&table); return status;}
+
+	//---------------------------------------------------------------------------------------------------------------
+
+	delete_tree      (node_1);
+	delete_table_var (&table);
+	fclose           (diff_html);
 
 	return status;
 }
+
+//govnocode
+//todo yf[eq cnthtnm dc` ] z rfgif b gjnjve rfgie rfgijq cjcfnm [eq hn hn hn hn hn hn hn hn hn h nh n h n hhhhnhnhhnhnn]

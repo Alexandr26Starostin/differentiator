@@ -5,6 +5,7 @@
 
 #include "const_in_diff.h"
 #include "new_node.h"
+#include "table_of_var.h"
 #include "read_and_print_formula.h"
 
 #define NAME_OPERATION_(operation, name) \
@@ -21,7 +22,7 @@
 		continue;                                    \
 	}
 
-static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str);
+static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str, table_t* table);
 
 //-----------------------------------------------------------------------------------------------------
 
@@ -57,7 +58,7 @@ diff_error_t print_formula (node_t* node)
 
 		case VAR:
 		{
-			printf ("(%c)", (node -> value).value_var);
+			printf ("(%s)", (node -> value).value_var);
 			break;
 		}
 
@@ -118,9 +119,10 @@ diff_error_t print_formula (node_t* node)
 
 //----------------------------------------------------------------------------------------------------------
 
-diff_error_t read_formula (node_t* node)
+diff_error_t read_formula (node_t* node, table_t* table)
 {
 	assert (node);
+	assert (table);
 
 	char str_formula[MAX_LEN_STR_FORMULA] = "";
 
@@ -132,16 +134,19 @@ diff_error_t read_formula (node_t* node)
 
 	size_t index_str = 0;
 
-	diff_error_t status = create_tree (node, str_formula, &index_str);
+	diff_error_t status = create_tree (node, str_formula, &index_str, table);
 
 	return status;
 }
 
-static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str)
+static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str, table_t* table)
 {
 	assert (node);
 	assert (str_formula);
 	assert (ptr_index_str);
+	assert (table);
+
+	diff_error_t status = NOT_ERROR;
 
 	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
 
@@ -151,7 +156,10 @@ static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_in
 		*ptr_index_str += 1;
 
 		node -> left = create_new_node (NUM, 0, NULL, NULL, node, __FILE__, __LINE__);
-		create_tree ((node -> left), str_formula, ptr_index_str);
+		if (node -> left == NULL) {return NOT_MEMORY_FOR_NEW_NODE;}
+
+		status = create_tree ((node -> left), str_formula, ptr_index_str, table);
+		if (status) {return status;}
 
 		while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
 
@@ -180,20 +188,26 @@ static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_in
 	{
 		sscanf (str_formula + *ptr_index_str, "%[^)]", name_operation);
 
+		//printf ("%s\n", name_operation);
+
 		if (strchr (name_operation, '(') == NULL)   //VAR
 		{
-			//printf ("%s\n", name_operation);
+			//printf ("\n\n%s\n\n", name_operation);
 
 			node -> type = VAR;
-			(node -> value).value_var = str_formula[*ptr_index_str];
+
+			status = add_var_in_table (table, name_operation, 0);
+			if (status) {return status;}
+
+			strcpy ((node -> value).value_var, name_operation);
 
 			*ptr_index_str += strlen (name_operation); //Временно +1, Но после появления таблицы переменных длина их имён будет произвольной.
 		}
 		else         //OP
 		{
-			sscanf (str_formula + *ptr_index_str, "%[^(]", name_operation);
+			sscanf (str_formula + *ptr_index_str, "%[^ (]", name_operation);
 
-			//printf ("%s\n", name_operation);
+			//printf ("!-%s\n", name_operation);
 
 			node -> type = OP;
 
@@ -220,16 +234,20 @@ static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_in
 
 	if (str_formula[*ptr_index_str] == '(')
 	{
-		
 		*ptr_index_str += 1;
 
 		node -> right = create_new_node (NUM, 0, NULL, NULL, node, __FILE__, __LINE__);
-		create_tree ((node -> right), str_formula, ptr_index_str);
+		if (node -> right == NULL) {return NOT_MEMORY_FOR_NEW_NODE;}
+
+		status = create_tree ((node -> right), str_formula, ptr_index_str, table);
+		if (status) {return status;}
 
 		while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
 
 		if (str_formula[*ptr_index_str] == ')') {*ptr_index_str += 1;}
 	}
 
-	return NOT_ERROR;
+	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+	return status;
 }

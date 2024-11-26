@@ -72,7 +72,7 @@ static diff_error_t print_edge (node_t* node, FILE* file_diff)
 
 		case VAR:
 		{
-			fprintf (file_diff, "node_%p [shape=record, label = \"{%c| {type = %d (VAR) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"yellow\"]\n\n\t", node, (node -> value).value_var, node -> type, node -> left, node, node -> parent, node -> right);
+			fprintf (file_diff, "node_%p [shape=record, label = \"{%s| {type = %d (VAR) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"yellow\"]\n\n\t", node, (node -> value).value_var, node -> type, node -> left, node, node -> parent, node -> right);
 			break;
 		}
 
