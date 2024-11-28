@@ -2,51 +2,146 @@ digraph
 {
 	node[fontsize=9]
 
-	node_0x5dfcec132290 [shape=record, label = "{/| {type = 3 (OP) | left = 0x5dfcec1322d0 | node = 0x5dfcec132290 | parent = (nil) | right = 0x5dfcec132390}}" style="filled",fillcolor="#BDEF9E"]
+	node_0x57520d459b10 [shape=record, label = "{/| {type = 3 (OP) | left = 0x57520d459ad0 | node = 0x57520d459b10 | parent = (nil) | right = 0x57520d459610}}" style="filled",fillcolor="#BDEF9E"]
 
-	node_0x5dfcec1322d0 [shape=record, label = "{+| {type = 3 (OP) | left = 0x5dfcec132310 | node = 0x5dfcec1322d0 | parent = 0x5dfcec132290 | right = 0x5dfcec132350}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x5dfcec132290 -> node_0x5dfcec1322d0
-
-	node_0x5dfcec132310 [shape=record, label = "{30| {type = 1 (NUM) | left = (nil) | node = 0x5dfcec132310 | parent = 0x5dfcec1322d0 | right = (nil)}}" style="filled",fillcolor="blue"]
+	node_0x57520d459ad0 [shape=record, label = "{-| {type = 3 (OP) | left = 0x57520d459a90 | node = 0x57520d459ad0 | parent = 0x57520d459b10 | right = 0x57520d459890}}" style="filled",fillcolor="#BDEF9E"]
 
 	edge[color="black",fontsize=12]
-	node_0x5dfcec1322d0 -> node_0x5dfcec132310
+	node_0x57520d459b10 -> node_0x57520d459ad0
 
-	node_0x5dfcec132350 [shape=record, label = "{50| {type = 1 (NUM) | left = (nil) | node = 0x5dfcec132350 | parent = 0x5dfcec1322d0 | right = (nil)}}" style="filled",fillcolor="blue"]
-
-	edge[color="black",fontsize=12]
-	node_0x5dfcec1322d0 -> node_0x5dfcec132350
-
-	node_0x5dfcec132390 [shape=record, label = "{+| {type = 3 (OP) | left = 0x5dfcec1323d0 | node = 0x5dfcec132390 | parent = 0x5dfcec132290 | right = 0x5dfcec132450}}" style="filled",fillcolor="#BDEF9E"]
+	node_0x57520d459a90 [shape=record, label = "{*| {type = 3 (OP) | left = 0x57520d459a50 | node = 0x57520d459a90 | parent = 0x57520d459ad0 | right = 0x57520d4598d0}}" style="filled",fillcolor="#BDEF9E"]
 
 	edge[color="black",fontsize=12]
-	node_0x5dfcec132290 -> node_0x5dfcec132390
+	node_0x57520d459ad0 -> node_0x57520d459a90
 
-	node_0x5dfcec1323d0 [shape=record, label = "{sin| {type = 3 (OP) | left = (nil) | node = 0x5dfcec1323d0 | parent = 0x5dfcec132390 | right = 0x5dfcec132410}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x5dfcec132390 -> node_0x5dfcec1323d0
-
-	node_0x5dfcec132410 [shape=record, label = "{y| {type = 2 (VAR) | left = (nil) | node = 0x5dfcec132410 | parent = 0x5dfcec1323d0 | right = (nil)}}" style="filled",fillcolor="yellow"]
+	node_0x57520d459a50 [shape=record, label = "{+| {type = 3 (OP) | left = 0x57520d459a10 | node = 0x57520d459a50 | parent = 0x57520d459a90 | right = 0x57520d4599d0}}" style="filled",fillcolor="#BDEF9E"]
 
 	edge[color="black",fontsize=12]
-	node_0x5dfcec1323d0 -> node_0x5dfcec132410
+	node_0x57520d459a90 -> node_0x57520d459a50
 
-	node_0x5dfcec132450 [shape=record, label = "{+| {type = 3 (OP) | left = 0x5dfcec132490 | node = 0x5dfcec132450 | parent = 0x5dfcec132390 | right = 0x5dfcec1324d0}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x5dfcec132390 -> node_0x5dfcec132450
-
-	node_0x5dfcec132490 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x5dfcec132490 | parent = 0x5dfcec132450 | right = (nil)}}" style="filled",fillcolor="yellow"]
+	node_0x57520d459a10 [shape=record, label = "{0| {type = 1 (NUM) | left = (nil) | node = 0x57520d459a10 | parent = 0x57520d459a50 | right = (nil)}}" style="filled",fillcolor="blue"]
 
 	edge[color="black",fontsize=12]
-	node_0x5dfcec132450 -> node_0x5dfcec132490
+	node_0x57520d459a50 -> node_0x57520d459a10
 
-	node_0x5dfcec1324d0 [shape=record, label = "{1| {type = 1 (NUM) | left = (nil) | node = 0x5dfcec1324d0 | parent = 0x5dfcec132450 | right = (nil)}}" style="filled",fillcolor="blue"]
+	node_0x57520d4599d0 [shape=record, label = "{0| {type = 1 (NUM) | left = (nil) | node = 0x57520d4599d0 | parent = 0x57520d459a50 | right = (nil)}}" style="filled",fillcolor="blue"]
 
 	edge[color="black",fontsize=12]
-	node_0x5dfcec132450 -> node_0x5dfcec1324d0
+	node_0x57520d459a50 -> node_0x57520d4599d0
+
+	node_0x57520d4598d0 [shape=record, label = "{+| {type = 3 (OP) | left = 0x57520d459910 | node = 0x57520d4598d0 | parent = 0x57520d459a90 | right = 0x57520d459990}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459a90 -> node_0x57520d4598d0
+
+	node_0x57520d459910 [shape=record, label = "{sin| {type = 3 (OP) | left = (nil) | node = 0x57520d459910 | parent = 0x57520d4598d0 | right = 0x57520d459950}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d4598d0 -> node_0x57520d459910
+
+	node_0x57520d459950 [shape=record, label = "{x | {type = 2 (VAR) | left = (nil) | node = 0x57520d459950 | parent = 0x57520d459910 | right = (nil)}}" style="filled",fillcolor="yellow"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459910 -> node_0x57520d459950
+
+	node_0x57520d459990 [shape=record, label = "{x | {type = 2 (VAR) | left = (nil) | node = 0x57520d459990 | parent = 0x57520d4598d0 | right = (nil)}}" style="filled",fillcolor="yellow"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d4598d0 -> node_0x57520d459990
+
+	node_0x57520d459890 [shape=record, label = "{*| {type = 3 (OP) | left = 0x57520d4597d0 | node = 0x57520d459890 | parent = 0x57520d459ad0 | right = 0x57520d459790}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459ad0 -> node_0x57520d459890
+
+	node_0x57520d4597d0 [shape=record, label = "{+| {type = 3 (OP) | left = 0x57520d459810 | node = 0x57520d4597d0 | parent = 0x57520d459890 | right = 0x57520d459850}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459890 -> node_0x57520d4597d0
+
+	node_0x57520d459810 [shape=record, label = "{30| {type = 1 (NUM) | left = (nil) | node = 0x57520d459810 | parent = 0x57520d4597d0 | right = (nil)}}" style="filled",fillcolor="blue"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d4597d0 -> node_0x57520d459810
+
+	node_0x57520d459850 [shape=record, label = "{50| {type = 1 (NUM) | left = (nil) | node = 0x57520d459850 | parent = 0x57520d4597d0 | right = (nil)}}" style="filled",fillcolor="blue"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d4597d0 -> node_0x57520d459850
+
+	node_0x57520d459790 [shape=record, label = "{+| {type = 3 (OP) | left = 0x57520d459750 | node = 0x57520d459790 | parent = 0x57520d459890 | right = 0x57520d459650}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459890 -> node_0x57520d459790
+
+	node_0x57520d459750 [shape=record, label = "{*| {type = 3 (OP) | left = 0x57520d459710 | node = 0x57520d459750 | parent = 0x57520d459790 | right = 0x57520d459690}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459790 -> node_0x57520d459750
+
+	node_0x57520d459710 [shape=record, label = "{cos| {type = 3 (OP) | left = (nil) | node = 0x57520d459710 | parent = 0x57520d459750 | right = 0x57520d4596d0}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459750 -> node_0x57520d459710
+
+	node_0x57520d4596d0 [shape=record, label = "{x | {type = 2 (VAR) | left = (nil) | node = 0x57520d4596d0 | parent = 0x57520d459710 | right = (nil)}}" style="filled",fillcolor="yellow"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459710 -> node_0x57520d4596d0
+
+	node_0x57520d459690 [shape=record, label = "{1| {type = 1 (NUM) | left = (nil) | node = 0x57520d459690 | parent = 0x57520d459750 | right = (nil)}}" style="filled",fillcolor="blue"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459750 -> node_0x57520d459690
+
+	node_0x57520d459650 [shape=record, label = "{1| {type = 1 (NUM) | left = (nil) | node = 0x57520d459650 | parent = 0x57520d459790 | right = (nil)}}" style="filled",fillcolor="blue"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459790 -> node_0x57520d459650
+
+	node_0x57520d459610 [shape=record, label = "{*| {type = 3 (OP) | left = 0x57520d459510 | node = 0x57520d459610 | parent = 0x57520d459b10 | right = 0x57520d459410}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459b10 -> node_0x57520d459610
+
+	node_0x57520d459510 [shape=record, label = "{+| {type = 3 (OP) | left = 0x57520d459550 | node = 0x57520d459510 | parent = 0x57520d459610 | right = 0x57520d4595d0}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459610 -> node_0x57520d459510
+
+	node_0x57520d459550 [shape=record, label = "{sin| {type = 3 (OP) | left = (nil) | node = 0x57520d459550 | parent = 0x57520d459510 | right = 0x57520d459590}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459510 -> node_0x57520d459550
+
+	node_0x57520d459590 [shape=record, label = "{x | {type = 2 (VAR) | left = (nil) | node = 0x57520d459590 | parent = 0x57520d459550 | right = (nil)}}" style="filled",fillcolor="yellow"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459550 -> node_0x57520d459590
+
+	node_0x57520d4595d0 [shape=record, label = "{x | {type = 2 (VAR) | left = (nil) | node = 0x57520d4595d0 | parent = 0x57520d459510 | right = (nil)}}" style="filled",fillcolor="yellow"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459510 -> node_0x57520d4595d0
+
+	node_0x57520d459410 [shape=record, label = "{+| {type = 3 (OP) | left = 0x57520d459450 | node = 0x57520d459410 | parent = 0x57520d459610 | right = 0x57520d4594d0}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459610 -> node_0x57520d459410
+
+	node_0x57520d459450 [shape=record, label = "{sin| {type = 3 (OP) | left = (nil) | node = 0x57520d459450 | parent = 0x57520d459410 | right = 0x57520d459490}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459410 -> node_0x57520d459450
+
+	node_0x57520d459490 [shape=record, label = "{x | {type = 2 (VAR) | left = (nil) | node = 0x57520d459490 | parent = 0x57520d459450 | right = (nil)}}" style="filled",fillcolor="yellow"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459450 -> node_0x57520d459490
+
+	node_0x57520d4594d0 [shape=record, label = "{x | {type = 2 (VAR) | left = (nil) | node = 0x57520d4594d0 | parent = 0x57520d459410 | right = (nil)}}" style="filled",fillcolor="yellow"]
+
+	edge[color="black",fontsize=12]
+	node_0x57520d459410 -> node_0x57520d4594d0
 
 	}

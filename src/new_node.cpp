@@ -21,7 +21,21 @@ node_t* create_new_node (type_arg_t type, double value, node_t* left, node_t* ri
 	new_node -> type   = type;
 	new_node -> left   = left;
 	new_node -> right  = right;
-	new_node -> parent = parent;
+
+	if (parent != NULL)
+	{
+		new_node -> parent = parent;
+	}
+
+	if (left != NULL)
+	{
+		left -> parent = new_node;
+	}
+
+	if (right != NULL)
+	{
+		right -> parent = new_node;
+	}
 
 	switch (type)
 	{

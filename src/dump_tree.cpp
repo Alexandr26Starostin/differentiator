@@ -96,7 +96,6 @@ static diff_error_t print_edge (node_t* node, FILE* file_diff)
 				{
 					printf ("Not find operation = %d", (node -> value).value_op);
 					return NOT_FIND_OP;
-					break;
 				}
 			}
 

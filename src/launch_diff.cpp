@@ -55,18 +55,25 @@ diff_error_t launch_diff ()
 
 	//---------------------------------------------------------------------------------------------------------------
 
-	node_t* node_2 = create_new_node (NUM, 0, NULL, NULL, NULL, __FILE__, __LINE__);
+	node_t* node_2 = copy_tree (node_1, NULL);
 	if (node_2 == NULL) {fclose (diff_html); delete_tree (node_1); delete_table_var (&table); return NOT_MEMORY_FOR_NEW_NODE;}
-
-	status = copy_tree (node_1, node_2);
-	if (status) {fclose (diff_html); delete_tree (node_1); delete_tree (node_2); delete_table_var (&table); return status;}
 
 	status = dump_tree (node_2, str_for_system, &index_picture, diff_html);
 	if (status) {fclose (diff_html); delete_tree (node_1); delete_tree (node_2); delete_table_var (&table); return status;}
 
 	//---------------------------------------------------------------------------------------------------------------
 
+	node_t* node_3 = create_derivate (node_1);
+	if (node_3 == NULL) {fclose (diff_html); delete_tree (node_1); delete_tree (node_2); delete_table_var (&table); return NOT_MEMORY_FOR_NEW_NODE;}
+
+	status = dump_tree (node_3, str_for_system, &index_picture, diff_html);
+	if (status) {fclose (diff_html); delete_tree (node_1); delete_tree (node_2); delete_tree (node_3); delete_table_var (&table); return status;}
+
+	//---------------------------------------------------------------------------------------------------------------------
+
 	delete_tree      (node_1);
+	delete_tree      (node_2);
+	delete_tree      (node_3);
 	delete_table_var (&table);
 	fclose           (diff_html);
 
