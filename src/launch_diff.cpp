@@ -71,6 +71,12 @@ diff_error_t launch_diff ()
 
 	//---------------------------------------------------------------------------------------------------------------------
 
+	size_t quantity_vars = 0;
+	count_vars (node_1, &quantity_vars);
+	printf ("\nquantity_vars in node_1 = %ld\n", quantity_vars);
+
+	//----------------------------------------------------------------------------------------------------------------------
+
 	delete_tree      (node_1);
 	delete_tree      (node_2);
 	delete_tree      (node_3);

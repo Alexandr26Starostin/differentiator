@@ -203,7 +203,24 @@ node_t* create_derivate (node_t* node)
 	}
 }
 
+//--------------------------------------------------------------------------------------------------------------------------
 
+diff_error_t count_vars (node_t* node, size_t* ptr_quantity_vars)
+{
+	assert (node);
+	assert (ptr_quantity_vars);
+
+	if (node -> type == VAR) 
+		*ptr_quantity_vars += 1;
+
+	if (node -> left != NULL)
+		count_vars (node -> left, ptr_quantity_vars);
+
+	if (node -> right != NULL)
+		count_vars (node -> right, ptr_quantity_vars);
+
+	return NOT_ERROR;
+}
 
 //здесь был саня 
 
