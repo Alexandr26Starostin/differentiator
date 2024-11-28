@@ -7,18 +7,14 @@
 
 diff_error_t delete_tree (node_t* node)
 {
-	assert (node);
-
-	if (node -> left != NULL)
+	if (node == NULL)
 	{
-		delete_tree (node -> left);
+		return NOT_ERROR;
 	}
 
-	if (node -> right != NULL)
-	{
-		delete_tree (node -> right);
-	}
-
+	delete_tree (node -> left);
+	delete_tree (node -> right);
+	
 	free (node);
 
 	return NOT_ERROR;

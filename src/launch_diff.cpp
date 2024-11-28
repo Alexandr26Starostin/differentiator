@@ -77,6 +77,13 @@ diff_error_t launch_diff ()
 
 	//----------------------------------------------------------------------------------------------------------------------
 
+	simplify_tree (node_3);
+
+	status = dump_tree (node_3, str_for_system, &index_picture, diff_html);
+	if (status) {fclose (diff_html); delete_tree (node_1); delete_tree (node_2); delete_tree (node_3); delete_table_var (&table); return status;}
+
+	//-------------------------------------------------------------------------------------------------------------------------
+
 	delete_tree      (node_1);
 	delete_tree      (node_2);
 	delete_tree      (node_3);

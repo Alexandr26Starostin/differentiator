@@ -6,5 +6,6 @@ double       calculator      (node_t* node, table_t* table);
 node_t*      copy_tree       (node_t* old_node, node_t* parent_new_node);
 node_t*      create_derivate (node_t* node);
 diff_error_t count_vars      (node_t* node, size_t* ptr_quantity_vars);
+diff_error_t simplify_tree   (node_t* node);
 
 #endif

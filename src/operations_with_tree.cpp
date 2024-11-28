@@ -5,21 +5,79 @@
 #include "const_in_diff.h"
 #include "table_of_var.h"
 #include "new_node.h"
+#include "delete_tree.h"
 #include "operations_with_tree.h"
 
-static diff_error_t read_new_number_in_var (table_t* table, size_t index);
+#define change_node_(delete_branch, save_branch) \
+	delete_tree (node -> delete_branch); \
+                                    \
+	node -> delete_branch = NULL;               \
+                                           \
+	node_t* old_##save_branch = node -> save_branch;        \
+                                                \
+	node -> type  = old_##save_branch -> type;     \
+	node -> value = old_##save_branch -> value;   \
+                                                          \
+	node -> left  = copy_tree (old_##save_branch -> left,  node);     \
+	node -> right = copy_tree (old_##save_branch -> right, node);     \
+                                                                     \
+	delete_tree (old_##save_branch);                                     \
+                                                                 \
+	count_of_simplification += 1;                                 \
+                                                                    \
+	return count_of_simplification;
+
+#define dL_ create_derivate (node -> left) 
+
+#define dR_ create_derivate (node -> right)  
+
+#define cL_ copy_tree (node -> left, NULL)
+
+#define cR_ copy_tree (node -> right, NULL)
+
+#define NUM_(value) create_new_node (NUM, value, NULL, NULL, NULL, __FILE__, __LINE__)
+
+#define ADD_(left, right) create_new_node (OP, ADD, left, right, NULL, __FILE__, __LINE__)
+
+#define SUB_(left, right) create_new_node (OP, SUB, left, right, NULL, __FILE__, __LINE__)
+
+#define MUL_(left, right) create_new_node (OP, MUL, left, right, NULL, __FILE__, __LINE__)
+
+#define DIV_(left, right) create_new_node (OP, DIV, left, right, NULL, __FILE__, __LINE__)
+
+#define SIN_(right) create_new_node (OP, SIN, NULL, right, NULL, __FILE__, __LINE__)
+
+#define COS_(right) create_new_node (OP, COS, NULL, right, NULL, __FILE__, __LINE__)
+
+#define SH_(right) create_new_node (OP, SH, NULL, right, NULL, __FILE__, __LINE__)
+
+#define CH_(right) create_new_node (OP, CH, NULL, right, NULL, __FILE__, __LINE__)
+
+#define SQRT_(right) create_new_node (OP, SQRT, NULL, right, NULL, __FILE__, __LINE__)
+
+static diff_error_t read_new_number_in_var    (table_t* table, size_t index);
+static bool         compare_doubles           (double num_1, double num_2);
+static size_t       simplify_numbers          (node_t* node);
+static size_t       simplify_neutral_elements (node_t* node);
+
+//-------------------------------------------------------------------------------------------------------------------------
 
 double evaluate_tree (node_t* node, table_t* table)
 {
 	assert (node);
-	assert (table);
 
 	switch (node -> type)
 	{
 		case NUM: return (node -> value).value_num;
 
-		case VAR: return *find_var_in_table (table, (node -> value).value_var);
-	
+		case VAR: 
+		{
+			if (table != NULL)
+				return *find_var_in_table (table, (node -> value).value_var);
+			else
+				return 0;
+		}
+
 		case OP:
 		{
 			switch ((node -> value).value_op)
@@ -128,35 +186,6 @@ node_t* copy_tree (node_t* old_node, node_t* parent_new_node)
 
 //---------------------------------------------------------------------------------------------------------------
 
-#define dL_ create_derivate (node -> left) 
-
-#define dR_ create_derivate (node -> right)  
-
-#define cL_ copy_tree (node -> left, NULL)
-
-#define cR_ copy_tree (node -> right, NULL)
-
-#define NUM_(value) create_new_node (NUM, value, NULL, NULL, NULL, __FILE__, __LINE__)
-
-#define ADD_(left, right) create_new_node (OP, ADD, left, right, NULL, __FILE__, __LINE__)
-
-#define SUB_(left, right) create_new_node (OP, SUB, left, right, NULL, __FILE__, __LINE__)
-
-#define MUL_(left, right) create_new_node (OP, MUL, left, right, NULL, __FILE__, __LINE__)
-
-#define DIV_(left, right) create_new_node (OP, DIV, left, right, NULL, __FILE__, __LINE__)
-
-#define SIN_(right) create_new_node (OP, SIN, NULL, right, NULL, __FILE__, __LINE__)
-
-#define COS_(right) create_new_node (OP, COS, NULL, right, NULL, __FILE__, __LINE__)
-
-#define SH_(right) create_new_node (OP, SH, NULL, right, NULL, __FILE__, __LINE__)
-
-#define CH_(right) create_new_node (OP, CH, NULL, right, NULL, __FILE__, __LINE__)
-
-#define SQRT_(right) create_new_node (OP, SQRT, NULL, right, NULL, __FILE__, __LINE__)
-
-
 node_t* create_derivate (node_t* node)
 {
 	if (node == NULL) {return NULL;}
@@ -220,6 +249,149 @@ diff_error_t count_vars (node_t* node, size_t* ptr_quantity_vars)
 		count_vars (node -> right, ptr_quantity_vars);
 
 	return NOT_ERROR;
+}
+
+//----------------------------------------------------------------------------------------------------------------------------
+
+diff_error_t simplify_tree (node_t* node)
+{
+	assert (node);
+
+	size_t count_of_simplification = 0;
+
+	while (true)      
+	{
+		count_of_simplification = 0;
+
+		count_of_simplification += simplify_numbers          (node);
+		count_of_simplification += simplify_neutral_elements (node);
+
+		if (count_of_simplification == 0)
+		{
+			count_of_simplification += simplify_numbers          (node);
+			count_of_simplification += simplify_neutral_elements (node);
+
+			if (count_of_simplification == 0) 
+			{
+				return NOT_ERROR;
+			}
+		}
+	}
+
+	return NOT_ERROR;
+}
+
+static size_t simplify_numbers (node_t* node)
+{
+	assert (node);
+
+	size_t count_of_simplification = 0;
+	size_t quantity_vars           = 0;
+
+	count_vars (node, &quantity_vars);
+
+	if (quantity_vars == 0)
+	{
+		double old_value = (node -> value).value_num;
+
+		(node -> value).value_num = evaluate_tree (node, NULL);
+
+		if (!compare_doubles ((node -> value).value_num, old_value))
+		{
+			count_of_simplification += 1;
+		}
+
+		node -> type = NUM;
+
+		delete_tree (node -> left);
+		delete_tree (node -> right);
+
+		node -> left  = NULL;
+		node -> right = NULL;
+
+		return count_of_simplification;
+	}
+
+	if (node -> left != NULL) {count_of_simplification += simplify_numbers (node -> left);}
+
+	if (node -> right != NULL) {count_of_simplification += simplify_numbers (node -> right);}
+
+	return count_of_simplification;
+}
+
+static size_t simplify_neutral_elements (node_t* node)
+{
+	assert (node);
+
+	size_t count_of_simplification = 0;
+
+	if (node -> left != NULL) {count_of_simplification += simplify_neutral_elements (node -> left);}
+
+	if (node -> right != NULL) {count_of_simplification += simplify_neutral_elements (node -> right);}
+
+	if (node -> type == OP)
+	{
+		if ((node -> value).value_op == ADD)
+		{
+			if (((node -> left) -> type == NUM) && compare_doubles (((node -> left) -> value).value_num, 0)) {change_node_(left, right)}
+
+			else if (((node -> right) -> type == NUM) && compare_doubles (((node -> right) -> value).value_num, 0)) {change_node_(right, left)}
+		}
+
+		else if ((node -> value).value_op == SUB)
+		{
+			if (((node -> left) -> type == NUM) && compare_doubles (((node -> left) -> value).value_num, 0))
+			{
+				(node -> value).value_op = MUL;
+
+				((node -> left) -> value).value_num = -1;
+
+				count_of_simplification += 1;
+
+				return count_of_simplification;
+			}
+
+			else if (((node -> right) -> type == NUM) && compare_doubles (((node -> right) -> value).value_num, 0)) {change_node_(right, left)}
+		}
+
+		else if ((node -> value).value_op == MUL)
+		{
+			if (((node -> left) -> type == NUM) && compare_doubles (((node -> left) -> value).value_num, 1)) {change_node_(left, right)}
+
+			else if (((node -> right) -> type == NUM) && compare_doubles (((node -> right) -> value).value_num, 1)) {change_node_(right, left)}
+
+			else if ((((node -> left) -> type == NUM) && compare_doubles (((node -> left) -> value).value_num, 0)) || (((node -> right) -> type == NUM) && compare_doubles (((node -> right) -> value).value_num, 0)))
+			{                                       
+				delete_tree (node -> left);
+				delete_tree (node -> right);
+
+				node -> left  = NULL;
+				node -> right = NULL;
+
+				node -> type = NUM;
+
+				(node -> value).value_num = 0;
+
+				count_of_simplification += 1;
+
+				return count_of_simplification;
+			}
+		}
+
+		else if ((node -> value).value_op == DIV)
+		{  
+			if (((node -> right) -> type == NUM) && compare_doubles (((node -> right) -> value).value_num, 1)) {change_node_(right, left)}
+		}
+	}
+
+	return count_of_simplification;
+}
+
+static bool compare_doubles (double num_1, double num_2)   //true if num_1 == num_2      false if num_1 != num_2
+{
+	if (abs (num_1 - num_2) < 0.0001) {return true;}
+
+	else {return false;}
 }
 
 //здесь был саня 
