@@ -77,6 +77,9 @@ diff_error_t print_formula (node_t* node)
 				NAME_OPERATION_(SH,   "sh");
 				NAME_OPERATION_(CH,   "ch");
 				NAME_OPERATION_(SQRT, "sqrt");
+				NAME_OPERATION_(LOG,  "log");
+				NAME_OPERATION_(LN,   "ln");
+				NAME_OPERATION_(DEG,  "^");
 
 				default:
 				{
@@ -222,6 +225,9 @@ static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_in
 				WRITE_NAME_OPERATION_(SH,   "sh");
 				WRITE_NAME_OPERATION_(CH,   "ch");
 				WRITE_NAME_OPERATION_(SQRT, "sqrt");
+				WRITE_NAME_OPERATION_(LOG,  "log");
+				WRITE_NAME_OPERATION_(LN,   "ln");
+				WRITE_NAME_OPERATION_(DEG,  "^");
 			}
 
 			*ptr_index_str += strlen (name_operation);

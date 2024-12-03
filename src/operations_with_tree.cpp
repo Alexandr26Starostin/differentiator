@@ -231,7 +231,32 @@ node_t* create_derivate (node_t* node)
 
 				case LOG: return DIV_(SUB_(DIV_(MUL_(dL_, LN_(cR_)), cL_), DIV_(MUL_(dR_, LN_(cL_)),cR_)) , DEG_(LN_(cR_), NUM_(2)));
 
-				case DEG: return ;
+				case DEG: 
+				{
+					size_t quantity_vars_left  = 0;
+					size_t quantity_vars_right = 0;
+
+					count_vars (node -> left, &quantity_vars_left);
+					count_vars (node -> right, &quantity_vars_right);
+
+					// printf ("quantity_vars_left  = %ld\n", quantity_vars_left);
+					// printf ("quantity_vars_right = %ld\n", quantity_vars_right);
+
+					if (quantity_vars_left == 0)
+					{
+						return MUL_(DEG_(cL_, cR_), LN_(cL_));
+					}
+
+					else if (quantity_vars_right == 0)
+					{
+						return MUL_(MUL_(cR_, dL_), DEG_(cL_, SUB_(cR_, NUM_(1))));
+					}
+
+					else
+					{
+						return MUL_(DEG_(cL_, cR_), ADD_(MUL_(dR_, LN_(cL_)), MUL_(cR_, DIV_(dL_, cL_))));
+					}
+				}
 			
 				default:
 				{
@@ -398,6 +423,23 @@ static size_t simplify_neutral_elements (node_t* node)
 		else if ((node -> value).value_op == DIV)
 		{  
 			if (((node -> right) -> type == NUM) && compare_doubles (((node -> right) -> value).value_num, 1)) {change_node_(right, left)}
+
+			if (((node -> left)  -> type == NUM) && compare_doubles (((node -> right) -> value).value_num, 0))
+			{
+				delete_tree (node -> left);
+				delete_tree (node -> right);
+
+				node -> left  = NULL;
+				node -> right = NULL;
+
+				node -> type = NUM;
+
+				(node -> value).value_num = 0;
+
+				count_of_simplification += 1;
+
+				return count_of_simplification;
+			}
 		}
 	}
 
