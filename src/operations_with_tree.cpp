@@ -55,6 +55,12 @@
 
 #define SQRT_(right) create_new_node (OP, SQRT, NULL, right, NULL, __FILE__, __LINE__)
 
+#define LOG_(left, right) create_new_node (OP, LOG, left, right, NULL, __FILE__, __LINE__)
+
+#define DEG_(left, right) create_new_node (OP, DEG, left, right, NULL, __FILE__, __LINE__)
+
+#define LN_(right) create_new_node (OP, LN, NULL, right, NULL, __FILE__, __LINE__)
+
 static diff_error_t read_new_number_in_var    (table_t* table, size_t index);
 static bool         compare_doubles           (double num_1, double num_2);
 static size_t       simplify_numbers          (node_t* node);
@@ -92,6 +98,11 @@ double evaluate_tree (node_t* node, table_t* table)
 				case SH:   return sinh (evaluate_tree (node -> right, table));
 				case CH:   return cosh (evaluate_tree (node -> right, table));
 				case SQRT: return sqrt (evaluate_tree (node -> right, table));
+				case LN:   return log  (evaluate_tree (node -> right, table));
+
+				case DEG:  return pow  (evaluate_tree (node -> left, table), evaluate_tree (node -> right, table));
+				case LOG:  return log  (evaluate_tree (node -> right, table)) / log (evaluate_tree (node -> left, table));
+				
 				
 				default:
 				{
@@ -214,7 +225,13 @@ node_t* create_derivate (node_t* node)
 				case SH: return MUL_(CH_(cR_), dR_);			
 				case CH: return MUL_(SH_(cR_), dR_);
 				
-				case SQRT: return NUM_(1);   //Неверно!!!!
+				case SQRT: return DIV_(dR_, MUL_(NUM_(2), SQRT_(cR_)));
+
+				case LN: return DIV_(dR_, cR_);
+
+				case LOG: return DIV_(SUB_(DIV_(MUL_(dL_, LN_(cR_)), cL_), DIV_(MUL_(dR_, LN_(cL_)),cR_)) , DEG_(LN_(cR_), NUM_(2)));
+
+				case DEG: return ;
 			
 				default:
 				{

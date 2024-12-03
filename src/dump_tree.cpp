@@ -91,6 +91,9 @@ static diff_error_t print_edge (node_t* node, FILE* file_diff)
 				NAME_OPERATION_(SH,   "sh");
 				NAME_OPERATION_(CH,   "ch");
 				NAME_OPERATION_(SQRT, "sqrt");
+				NAME_OPERATION_(LOG, "log");
+				NAME_OPERATION_(DEG, "^");
+				NAME_OPERATION_(LN, "ln");
 
 				default:
 				{

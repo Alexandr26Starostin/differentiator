@@ -29,7 +29,10 @@ enum operation_t
 	SH   = 9,
 	CH   = 10,
 
-	SQRT = 11
+	SQRT = 11,
+	LOG  = 12,
+	DEG  = 13,
+	LN   = 14
 };
 
 union value_t
