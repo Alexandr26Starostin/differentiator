@@ -103,7 +103,6 @@ double evaluate_tree (node_t* node, table_t* table)
 				case DEG:  return pow  (evaluate_tree (node -> left, table), evaluate_tree (node -> right, table));
 				case LOG:  return log  (evaluate_tree (node -> right, table)) / log (evaluate_tree (node -> left, table));
 				
-				
 				default:
 				{
 					printf ("Not find operation = %d", (node -> value).value_op);
@@ -229,7 +228,22 @@ node_t* create_derivate (node_t* node)
 
 				case LN: return DIV_(dR_, cR_);
 
-				case LOG: return DIV_(SUB_(DIV_(MUL_(dL_, LN_(cR_)), cL_), DIV_(MUL_(dR_, LN_(cL_)),cR_)) , DEG_(LN_(cR_), NUM_(2)));
+				case LOG:
+				{
+					size_t quantity_vars_left  = 0;
+
+					count_vars (node -> left, &quantity_vars_left);
+
+					if (quantity_vars_left == 0) 
+					{
+						return DIV_(dR_, MUL_(LN_(cL_), cR_));
+					}
+
+					else
+					{
+						return DIV_(SUB_(DIV_(MUL_(dR_, LN_(cL_)),cR_), DIV_(MUL_(dL_, LN_(cR_)), cL_)) , DEG_(LN_(cL_), NUM_(2)));
+					}
+				}
 
 				case DEG: 
 				{
@@ -319,8 +333,6 @@ diff_error_t simplify_tree (node_t* node)
 			}
 		}
 	}
-
-	return NOT_ERROR;
 }
 
 static size_t simplify_numbers (node_t* node)
@@ -424,7 +436,7 @@ static size_t simplify_neutral_elements (node_t* node)
 		{  
 			if (((node -> right) -> type == NUM) && compare_doubles (((node -> right) -> value).value_num, 1)) {change_node_(right, left)}
 
-			if (((node -> left)  -> type == NUM) && compare_doubles (((node -> right) -> value).value_num, 0))
+			if (((node -> left)  -> type == NUM) && compare_doubles (((node -> left) -> value).value_num, 0))
 			{
 				delete_tree (node -> left);
 				delete_tree (node -> right);

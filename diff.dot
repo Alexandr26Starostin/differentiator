@@ -2,171 +2,61 @@ digraph
 {
 	node[fontsize=9]
 
-	node_0x6289b99cbf50 [shape=record, label = "{*| {type = 3 (OP) | left = 0x6289b99cbf10 | node = 0x6289b99cbf50 | parent = (nil) | right = 0x6289b99cbc90}}" style="filled",fillcolor="#BDEF9E"]
+	node_0x5830f2a104d0 [shape=record, label = "{*| {type = 3 (OP) | left = 0x5830f2a10490 | node = 0x5830f2a104d0 | parent = (nil) | right = 0x5830f2a103d0}}" style="filled",fillcolor="#BDEF9E"]
 
-	node_0x6289b99cbf10 [shape=record, label = "{^| {type = 3 (OP) | left = 0x6289b99cbd90 | node = 0x6289b99cbf10 | parent = 0x6289b99cbf50 | right = 0x6289b99cbcd0}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cbf50 -> node_0x6289b99cbf10
-
-	node_0x6289b99cbd90 [shape=record, label = "{+| {type = 3 (OP) | left = 0x6289b99cbdd0 | node = 0x6289b99cbd90 | parent = 0x6289b99cbf10 | right = 0x6289b99cbe50}}" style="filled",fillcolor="#BDEF9E"]
+	node_0x5830f2a10490 [shape=record, label = "{^| {type = 3 (OP) | left = 0x5830f2a10450 | node = 0x5830f2a10490 | parent = 0x5830f2a104d0 | right = 0x5830f2a10410}}" style="filled",fillcolor="#BDEF9E"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cbf10 -> node_0x6289b99cbd90
+	node_0x5830f2a104d0 -> node_0x5830f2a10490
 
-	node_0x6289b99cbdd0 [shape=record, label = "{sin| {type = 3 (OP) | left = (nil) | node = 0x6289b99cbdd0 | parent = 0x6289b99cbd90 | right = 0x6289b99cbe10}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cbd90 -> node_0x6289b99cbdd0
-
-	node_0x6289b99cbe10 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x6289b99cbe10 | parent = 0x6289b99cbdd0 | right = (nil)}}" style="filled",fillcolor="yellow"]
+	node_0x5830f2a10450 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x5830f2a10450 | parent = 0x5830f2a10490 | right = (nil)}}" style="filled",fillcolor="yellow"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cbdd0 -> node_0x6289b99cbe10
+	node_0x5830f2a10490 -> node_0x5830f2a10450
 
-	node_0x6289b99cbe50 [shape=record, label = "{+| {type = 3 (OP) | left = 0x6289b99cbe90 | node = 0x6289b99cbe50 | parent = 0x6289b99cbd90 | right = 0x6289b99cbed0}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cbd90 -> node_0x6289b99cbe50
-
-	node_0x6289b99cbe90 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x6289b99cbe90 | parent = 0x6289b99cbe50 | right = (nil)}}" style="filled",fillcolor="yellow"]
+	node_0x5830f2a10410 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x5830f2a10410 | parent = 0x5830f2a10490 | right = (nil)}}" style="filled",fillcolor="yellow"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cbe50 -> node_0x6289b99cbe90
+	node_0x5830f2a10490 -> node_0x5830f2a10410
 
-	node_0x6289b99cbed0 [shape=record, label = "{1| {type = 1 (NUM) | left = (nil) | node = 0x6289b99cbed0 | parent = 0x6289b99cbe50 | right = (nil)}}" style="filled",fillcolor="blue"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cbe50 -> node_0x6289b99cbed0
-
-	node_0x6289b99cbcd0 [shape=record, label = "{+| {type = 3 (OP) | left = 0x6289b99cbd10 | node = 0x6289b99cbcd0 | parent = 0x6289b99cbf10 | right = 0x6289b99cbd50}}" style="filled",fillcolor="#BDEF9E"]
+	node_0x5830f2a103d0 [shape=record, label = "{+| {type = 3 (OP) | left = 0x5830f2a10390 | node = 0x5830f2a103d0 | parent = 0x5830f2a104d0 | right = 0x5830f2a10290}}" style="filled",fillcolor="#BDEF9E"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cbf10 -> node_0x6289b99cbcd0
+	node_0x5830f2a104d0 -> node_0x5830f2a103d0
 
-	node_0x6289b99cbd10 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x6289b99cbd10 | parent = 0x6289b99cbcd0 | right = (nil)}}" style="filled",fillcolor="yellow"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cbcd0 -> node_0x6289b99cbd10
-
-	node_0x6289b99cbd50 [shape=record, label = "{50| {type = 1 (NUM) | left = (nil) | node = 0x6289b99cbd50 | parent = 0x6289b99cbcd0 | right = (nil)}}" style="filled",fillcolor="blue"]
+	node_0x5830f2a10390 [shape=record, label = "{ln| {type = 3 (OP) | left = (nil) | node = 0x5830f2a10390 | parent = 0x5830f2a103d0 | right = 0x5830f2a10510}}" style="filled",fillcolor="#BDEF9E"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cbcd0 -> node_0x6289b99cbd50
+	node_0x5830f2a103d0 -> node_0x5830f2a10390
 
-	node_0x6289b99cbc90 [shape=record, label = "{+| {type = 3 (OP) | left = 0x6289b99cbc50 | node = 0x6289b99cbc90 | parent = 0x6289b99cbf50 | right = 0x6289b99cb990}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cbf50 -> node_0x6289b99cbc90
-
-	node_0x6289b99cbc50 [shape=record, label = "{ln| {type = 3 (OP) | left = (nil) | node = 0x6289b99cbc50 | parent = 0x6289b99cbc90 | right = 0x6289b99cbf90}}" style="filled",fillcolor="#BDEF9E"]
+	node_0x5830f2a10510 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x5830f2a10510 | parent = 0x5830f2a10390 | right = (nil)}}" style="filled",fillcolor="yellow"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cbc90 -> node_0x6289b99cbc50
+	node_0x5830f2a10390 -> node_0x5830f2a10510
 
-	node_0x6289b99cbf90 [shape=record, label = "{+| {type = 3 (OP) | left = 0x6289b99cbfd0 | node = 0x6289b99cbf90 | parent = 0x6289b99cbc50 | right = 0x6289b99cc050}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cbc50 -> node_0x6289b99cbf90
-
-	node_0x6289b99cbfd0 [shape=record, label = "{sin| {type = 3 (OP) | left = (nil) | node = 0x6289b99cbfd0 | parent = 0x6289b99cbf90 | right = 0x6289b99cc010}}" style="filled",fillcolor="#BDEF9E"]
+	node_0x5830f2a10290 [shape=record, label = "{*| {type = 3 (OP) | left = 0x5830f2a10250 | node = 0x5830f2a10290 | parent = 0x5830f2a103d0 | right = 0x5830f2a10210}}" style="filled",fillcolor="#BDEF9E"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cbf90 -> node_0x6289b99cbfd0
+	node_0x5830f2a103d0 -> node_0x5830f2a10290
 
-	node_0x6289b99cc010 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x6289b99cc010 | parent = 0x6289b99cbfd0 | right = (nil)}}" style="filled",fillcolor="yellow"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cbfd0 -> node_0x6289b99cc010
-
-	node_0x6289b99cc050 [shape=record, label = "{+| {type = 3 (OP) | left = 0x6289b99cc090 | node = 0x6289b99cc050 | parent = 0x6289b99cbf90 | right = 0x6289b99cc0d0}}" style="filled",fillcolor="#BDEF9E"]
+	node_0x5830f2a10250 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x5830f2a10250 | parent = 0x5830f2a10290 | right = (nil)}}" style="filled",fillcolor="yellow"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cbf90 -> node_0x6289b99cc050
+	node_0x5830f2a10290 -> node_0x5830f2a10250
 
-	node_0x6289b99cc090 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x6289b99cc090 | parent = 0x6289b99cc050 | right = (nil)}}" style="filled",fillcolor="yellow"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cc050 -> node_0x6289b99cc090
-
-	node_0x6289b99cc0d0 [shape=record, label = "{1| {type = 1 (NUM) | left = (nil) | node = 0x6289b99cc0d0 | parent = 0x6289b99cc050 | right = (nil)}}" style="filled",fillcolor="blue"]
+	node_0x5830f2a10210 [shape=record, label = "{/| {type = 3 (OP) | left = 0x5830f2a101d0 | node = 0x5830f2a10210 | parent = 0x5830f2a10290 | right = 0x5830f2a10190}}" style="filled",fillcolor="#BDEF9E"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cc050 -> node_0x6289b99cc0d0
+	node_0x5830f2a10290 -> node_0x5830f2a10210
 
-	node_0x6289b99cb990 [shape=record, label = "{*| {type = 3 (OP) | left = 0x6289b99cb8d0 | node = 0x6289b99cb990 | parent = 0x6289b99cbc90 | right = 0x6289b99cb890}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cbc90 -> node_0x6289b99cb990
-
-	node_0x6289b99cb8d0 [shape=record, label = "{+| {type = 3 (OP) | left = 0x6289b99cb910 | node = 0x6289b99cb8d0 | parent = 0x6289b99cb990 | right = 0x6289b99cb950}}" style="filled",fillcolor="#BDEF9E"]
+	node_0x5830f2a101d0 [shape=record, label = "{1| {type = 1 (NUM) | left = (nil) | node = 0x5830f2a101d0 | parent = 0x5830f2a10210 | right = (nil)}}" style="filled",fillcolor="blue"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cb990 -> node_0x6289b99cb8d0
+	node_0x5830f2a10210 -> node_0x5830f2a101d0
 
-	node_0x6289b99cb910 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x6289b99cb910 | parent = 0x6289b99cb8d0 | right = (nil)}}" style="filled",fillcolor="yellow"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb8d0 -> node_0x6289b99cb910
-
-	node_0x6289b99cb950 [shape=record, label = "{50| {type = 1 (NUM) | left = (nil) | node = 0x6289b99cb950 | parent = 0x6289b99cb8d0 | right = (nil)}}" style="filled",fillcolor="blue"]
+	node_0x5830f2a10190 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x5830f2a10190 | parent = 0x5830f2a10210 | right = (nil)}}" style="filled",fillcolor="yellow"]
 
 	edge[color="black",fontsize=12]
-	node_0x6289b99cb8d0 -> node_0x6289b99cb950
-
-	node_0x6289b99cb890 [shape=record, label = "{/| {type = 3 (OP) | left = 0x6289b99cb850 | node = 0x6289b99cb890 | parent = 0x6289b99cb990 | right = 0x6289b99cb510}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb990 -> node_0x6289b99cb890
-
-	node_0x6289b99cb850 [shape=record, label = "{+| {type = 3 (OP) | left = 0x6289b99cb810 | node = 0x6289b99cb850 | parent = 0x6289b99cb890 | right = 0x6289b99cb710}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb890 -> node_0x6289b99cb850
-
-	node_0x6289b99cb810 [shape=record, label = "{cos| {type = 3 (OP) | left = (nil) | node = 0x6289b99cb810 | parent = 0x6289b99cb850 | right = 0x6289b99cb750}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb850 -> node_0x6289b99cb810
-
-	node_0x6289b99cb750 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x6289b99cb750 | parent = 0x6289b99cb810 | right = (nil)}}" style="filled",fillcolor="yellow"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb810 -> node_0x6289b99cb750
-
-	node_0x6289b99cb710 [shape=record, label = "{1| {type = 1 (NUM) | left = (nil) | node = 0x6289b99cb710 | parent = 0x6289b99cb850 | right = (nil)}}" style="filled",fillcolor="blue"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb850 -> node_0x6289b99cb710
-
-	node_0x6289b99cb510 [shape=record, label = "{+| {type = 3 (OP) | left = 0x6289b99cb550 | node = 0x6289b99cb510 | parent = 0x6289b99cb890 | right = 0x6289b99cb5d0}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb890 -> node_0x6289b99cb510
-
-	node_0x6289b99cb550 [shape=record, label = "{sin| {type = 3 (OP) | left = (nil) | node = 0x6289b99cb550 | parent = 0x6289b99cb510 | right = 0x6289b99cb590}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb510 -> node_0x6289b99cb550
-
-	node_0x6289b99cb590 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x6289b99cb590 | parent = 0x6289b99cb550 | right = (nil)}}" style="filled",fillcolor="yellow"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb550 -> node_0x6289b99cb590
-
-	node_0x6289b99cb5d0 [shape=record, label = "{+| {type = 3 (OP) | left = 0x6289b99cb610 | node = 0x6289b99cb5d0 | parent = 0x6289b99cb510 | right = 0x6289b99cb650}}" style="filled",fillcolor="#BDEF9E"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb510 -> node_0x6289b99cb5d0
-
-	node_0x6289b99cb610 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x6289b99cb610 | parent = 0x6289b99cb5d0 | right = (nil)}}" style="filled",fillcolor="yellow"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb5d0 -> node_0x6289b99cb610
-
-	node_0x6289b99cb650 [shape=record, label = "{1| {type = 1 (NUM) | left = (nil) | node = 0x6289b99cb650 | parent = 0x6289b99cb5d0 | right = (nil)}}" style="filled",fillcolor="blue"]
-
-	edge[color="black",fontsize=12]
-	node_0x6289b99cb5d0 -> node_0x6289b99cb650
+	node_0x5830f2a10210 -> node_0x5830f2a10190
 
 	}
