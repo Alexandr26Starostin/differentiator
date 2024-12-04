@@ -8,6 +8,23 @@
 #include "table_of_var.h"
 #include "read_and_print_formula.h"
 
+#define WRITE_WORD_IN_OP_(operation, name)     \
+	if (strcmp (word, name) == 0)               \
+	{                                                 \
+		(tokens -> tokens_array)[tokens -> index_free_token].type           = OP;  \
+		(tokens -> tokens_array)[tokens -> index_free_token].value.value_op = operation;               \
+		return true;                                    \
+	}
+
+static diff_error_t lexical_analysis 	   (char* str_formula, tokens_array* tokens, table_t* table);
+static diff_error_t create_tokens    	   (tokens_array* tokens);
+static diff_error_t delete_tokens    	   (tokens_array* tokens);
+static diff_error_t realloc_tokens         (tokens_array* tokens);
+static diff_error_t dump_tokens            (tokens_array* tokens);
+static bool         find_word_in_operation (char* word, tokens_array* tokens);
+
+//-------------------------------------------------------------------------------------------------------------
+
 #define NAME_OPERATION_(operation, name) \
 	case operation:                             \
 	{                                      \
@@ -135,9 +152,21 @@ diff_error_t read_formula (node_t* node, table_t* table)
 	getchar ();
 	//printf ("%s\n", str_formula);
 
+	tokens_array tokens = {};
+	diff_error_t status = create_tokens (&tokens);
+	if (status) {return status;}
+
+	status = lexical_analysis (str_formula, &tokens, table);
+	if (status) {return status;}
+
+	dump_tokens (&tokens);
+	getchar ();
+
 	size_t index_str = 0;
 
-	diff_error_t status = create_tree (node, str_formula, &index_str, table);
+	 status = create_tree (node, str_formula, &index_str, table);
+
+	delete_tokens (&tokens);
 
 	return status;
 }
@@ -204,7 +233,7 @@ static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_in
 
 			strcpy ((node -> value).value_var, name_operation);
 
-			*ptr_index_str += strlen (name_operation); //Временно +1, Но после появления таблицы переменных длина их имён будет произвольной.
+			*ptr_index_str += strlen (name_operation);
 		}
 		else         //OP
 		{
@@ -257,3 +286,206 @@ static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_in
 
 	return status;
 }
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+static diff_error_t lexical_analysis (char* str_formula, tokens_array* tokens, table_t* table)
+{
+	assert (str_formula);
+	assert (tokens);
+	assert (table);
+
+	diff_error_t status = create_tokens (tokens);
+	if (status) {return status;}
+
+	size_t index_str = 0;
+
+	while (str_formula[index_str] != '\0')
+	{
+		while (str_formula[index_str] == ' ') {index_str++;}
+
+		if ('0' <= str_formula[index_str] && str_formula[index_str] <= '9')
+		{
+			char* new_position = NULL;
+
+			(tokens -> tokens_array)[tokens -> index_free_token].type            = NUM;
+			(tokens -> tokens_array)[tokens -> index_free_token].value.value_num = strtod (str_formula + index_str, &new_position);
+
+			index_str = new_position - str_formula;
+
+			tokens -> index_free_token += 1;
+
+			if (tokens -> index_free_token == tokens -> size_tokens)
+			{
+				status = realloc_tokens (tokens);
+				if (status) {return status;}
+			}
+		}
+
+		else
+		{
+			char word[MAX_LEN_STR_FORMULA] = "";
+
+			int shift_index_str = 0;
+
+			sscanf (str_formula + index_str, "%[^() ]%n", word, &shift_index_str);
+
+			index_str += shift_index_str;
+
+			if (shift_index_str == 0)    //str_formula[index_str] == '(' || str_formula[index_str] == ')'
+			{
+				word[0] = str_formula[index_str];
+
+				index_str += 1;
+			}
+
+			if (find_word_in_operation (word, tokens))
+			{
+				tokens -> index_free_token += 1; 
+
+				if (tokens -> index_free_token == tokens -> size_tokens)   //verbose -v
+				{
+					status = realloc_tokens (tokens);
+					if (status) {return status;}
+				}
+			}
+
+			else
+			{
+				(tokens -> tokens_array)[tokens -> index_free_token].type = VAR;  
+
+				if (word[0] != '(' && word[0] != ')')
+				{
+					status = add_var_in_table (table, word, 0);
+					if (status) {return status;}
+				}
+
+				strcpy ((tokens -> tokens_array)[tokens -> index_free_token].value.value_var, word);
+
+				tokens -> index_free_token += 1;
+
+				if (tokens -> index_free_token == tokens -> size_tokens)
+				{
+					status = realloc_tokens (tokens);
+					if (status) {return status;}
+				}
+			}
+		}
+	}
+
+	return status;
+}
+
+static diff_error_t create_tokens (tokens_array* tokens)
+{
+	assert (tokens);
+
+	tokens -> tokens_array = (token_t*) calloc (MIN_SIZE_TOKENS_ARRAY, sizeof (token_t));
+
+	if (tokens -> tokens_array == NULL)
+	{
+		printf ("Error in %s:%d\n", __FILE__, __LINE__);
+		printf ("Not memory for tokens_array\n");
+		return NOT_MEMORY_FOR_TOKENS_ARRAY;
+	}
+
+	tokens -> size_tokens      = MIN_SIZE_TOKENS_ARRAY;
+	tokens -> index_free_token = 0;
+
+	return NOT_ERROR;
+}
+
+static diff_error_t delete_tokens (tokens_array* tokens)
+{
+	assert (tokens);
+
+	printf ("!\n");
+
+	free (tokens -> tokens_array);
+
+	tokens -> size_tokens      = 0;
+	tokens -> index_free_token = 0;
+
+	return NOT_ERROR;
+}
+
+static diff_error_t realloc_tokens (tokens_array* tokens)
+{
+	assert (tokens);
+
+	tokens -> size_tokens *= 2;
+
+	tokens -> tokens_array = (token_t*) realloc (tokens -> tokens_array, sizeof (token_t) * tokens -> size_tokens);
+
+	if (tokens -> tokens_array == NULL)
+	{
+		printf ("Error in %s:%d\n", __FILE__, __LINE__);
+		printf ("Not memory for tokens_array\n");
+		return NOT_MEMORY_FOR_TOKENS_ARRAY;
+	}
+
+	return NOT_ERROR;
+}
+
+static bool find_word_in_operation (char* word, tokens_array* tokens)
+{
+	assert (word);
+	assert (tokens);
+
+	WRITE_WORD_IN_OP_(ADD, "+");
+	WRITE_WORD_IN_OP_(SUB, "-");
+	WRITE_WORD_IN_OP_(MUL, "*");
+	WRITE_WORD_IN_OP_(DIV, "/");
+
+	WRITE_WORD_IN_OP_(SIN, "sin");
+	WRITE_WORD_IN_OP_(COS, "cos");
+	WRITE_WORD_IN_OP_(SH,  "sh");
+	WRITE_WORD_IN_OP_(CH,  "ch");
+
+	WRITE_WORD_IN_OP_(SQRT, "sqrt");
+	WRITE_WORD_IN_OP_(LOG,  "log");
+	WRITE_WORD_IN_OP_(DEG,  "^");
+	WRITE_WORD_IN_OP_(LN,   "ln");
+	
+	return false;
+}
+
+static diff_error_t dump_tokens (tokens_array* tokens)
+{
+	assert (tokens);
+
+	printf ("--------------------------------------------------------------------------------------------------------------\n");
+	printf ("Dump tokens:\n\n");
+
+	printf ("tokens -> size_tokens      == %ld\n",   tokens -> size_tokens);
+	printf ("tokens -> index_free_token == %ld\n\n", tokens -> index_free_token);
+	printf ("tokens -> tokens_array:\n\n");
+	printf ("index     type    value\n");
+
+	for (size_t index = 0; index < tokens -> index_free_token; index++)
+	{
+		printf ("%7ld %7d ", index, (tokens -> tokens_array)[index].type);
+
+		if ((tokens -> tokens_array)[index].type == NUM)
+		{
+			printf ("%7lg \n", (tokens -> tokens_array)[index].value.value_num);
+		}
+
+		else if ((tokens -> tokens_array)[index].type == OP)
+		{
+			printf ("%7d \n", (tokens -> tokens_array)[index].value.value_op);	
+		}
+
+		else //(tokens -> tokens_array)[index].type == VAR
+		{
+			printf ("%7s \n", (tokens -> tokens_array)[index].value.value_var);
+		}
+	}
+
+	printf ("--------------------------------------------------------------------------------------------------------------\n");
+
+	return NOT_ERROR;
+}
+

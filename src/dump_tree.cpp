@@ -5,11 +5,11 @@
 #include "const_in_diff.h"
 #include "dump_tree.h"
 
-#define NAME_OPERATION_(operation, name) \
-	case operation:                             \
-	{                                      \
-		name_operation = name;   \
-		break;                               \
+#define NAME_OPERATION_(operation, name)    \
+	case operation:                         \
+	{                                       \
+		name_operation = name;   			\
+		break;                              \
 	}
 
 static diff_error_t print_edge (node_t* node, FILE* file_diff);

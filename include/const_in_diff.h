@@ -7,6 +7,7 @@ const size_t INDEX_NUMBER_OF_PICTURE = 36;
 const size_t MAX_LEN_STR_FORMULA     = 70;
 const size_t MIN_SIZE_TABLE_VAR      = 15;
 const size_t MAX_LEN_NAME_VAR        = 10;
+const size_t MIN_SIZE_TOKENS_ARRAY   = 10;
 
 //-------------------------------------------
 
@@ -70,13 +71,31 @@ struct table_t
 
 enum diff_error_t
 {
-	NOT_ERROR 		          = 0,
-	NOT_FIND_DIFF_DOT         = 1,
-	NOT_FIND_DIFF_HTML        = 2,
-	NOT_FIND_TYPE_ARG         = 3,
-	NOT_FIND_OP               = 4,
-	NOT_MEMORY_FOR_TABLE_VAR  = 5,
-	NOT_MEMORY_FOR_NEW_NODE   = 6
+	NOT_ERROR 		            = 0,
+	NOT_FIND_DIFF_DOT           = 1,
+	NOT_FIND_DIFF_HTML          = 2,
+	NOT_FIND_TYPE_ARG           = 3,
+	NOT_FIND_OP                 = 4,
+	NOT_MEMORY_FOR_TABLE_VAR    = 5,
+	NOT_MEMORY_FOR_NEW_NODE     = 6,
+	NOT_MEMORY_FOR_TOKENS_ARRAY = 7
 };
+
+//--------------------------------------------------------------
+
+struct token_t
+{
+	value_t    value;
+	type_arg_t type;
+};
+
+struct tokens_array
+{
+	token_t* tokens_array;
+	size_t   size_tokens;
+	size_t   index_free_token;
+};
+
+//----------------------------------------------------------------
 
 #endif
