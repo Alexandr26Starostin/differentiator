@@ -33,10 +33,12 @@ diff_error_t launch_diff ()
 
 	printf ("Привет!)\n");
 
-	node_t* node_1 = create_new_node (NUM, 0, NULL, NULL, NULL, __FILE__, __LINE__);
-	if (node_1 == NULL) {fclose (diff_html); delete_table_var (&table); return NOT_MEMORY_FOR_NEW_NODE;}
+	// node_t* node_1 = create_new_node (NUM, 0, NULL, NULL, NULL, __FILE__, __LINE__);
+	// if (node_1 == NULL) {fclose (diff_html); delete_table_var (&table); return NOT_MEMORY_FOR_NEW_NODE;}
 
-	status = read_formula (node_1, &table);
+	node_t* node_1 = NULL;
+
+	status = read_formula (&node_1, &table);
 	if (status) {fclose (diff_html); delete_tree (node_1); delete_table_var (&table); return status;}
 
 	//dump_table_var (&table);

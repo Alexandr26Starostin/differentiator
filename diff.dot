@@ -2,6 +2,26 @@ digraph
 {
 	node[fontsize=9]
 
-	node_0x5c7108bcf560 [shape=record, label = "{0| {type = 1 (NUM) | left = (nil) | node = 0x5c7108bcf560 | parent = (nil) | right = (nil)}}" style="filled",fillcolor="blue"]
+	node_0x5f6ec50154d0 [shape=record, label = "{/| {type = 3 (OP) | left = 0x5f6ec5015490 | node = 0x5f6ec50154d0 | parent = (nil) | right = 0x5f6ec5015450}}" style="filled",fillcolor="#BDEF9E"]
+
+	node_0x5f6ec5015490 [shape=record, label = "{1| {type = 1 (NUM) | left = (nil) | node = 0x5f6ec5015490 | parent = 0x5f6ec50154d0 | right = (nil)}}" style="filled",fillcolor="blue"]
+
+	edge[color="black",fontsize=12]
+	node_0x5f6ec50154d0 -> node_0x5f6ec5015490
+
+	node_0x5f6ec5015450 [shape=record, label = "{*| {type = 3 (OP) | left = 0x5f6ec5015410 | node = 0x5f6ec5015450 | parent = 0x5f6ec50154d0 | right = 0x5f6ec5015390}}" style="filled",fillcolor="#BDEF9E"]
+
+	edge[color="black",fontsize=12]
+	node_0x5f6ec50154d0 -> node_0x5f6ec5015450
+
+	node_0x5f6ec5015410 [shape=record, label = "{1.09861| {type = 1 (NUM) | left = (nil) | node = 0x5f6ec5015410 | parent = 0x5f6ec5015450 | right = (nil)}}" style="filled",fillcolor="blue"]
+
+	edge[color="black",fontsize=12]
+	node_0x5f6ec5015450 -> node_0x5f6ec5015410
+
+	node_0x5f6ec5015390 [shape=record, label = "{x| {type = 2 (VAR) | left = (nil) | node = 0x5f6ec5015390 | parent = 0x5f6ec5015450 | right = (nil)}}" style="filled",fillcolor="yellow"]
+
+	edge[color="black",fontsize=12]
+	node_0x5f6ec5015450 -> node_0x5f6ec5015390
 
 	}

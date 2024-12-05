@@ -4,7 +4,7 @@
 //--------------------------------------------------------------
 
 const size_t INDEX_NUMBER_OF_PICTURE = 36;
-const size_t MAX_LEN_STR_FORMULA     = 70;
+const size_t MAX_LEN_STR_FORMULA     = 150;
 const size_t MIN_SIZE_TABLE_VAR      = 15;
 const size_t MAX_LEN_NAME_VAR        = 10;
 const size_t MIN_SIZE_TOKENS_ARRAY   = 10;

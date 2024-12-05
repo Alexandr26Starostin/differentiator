@@ -24,26 +24,26 @@ static diff_error_t realloc_tokens         (tokens_array* tokens);
 static diff_error_t dump_tokens            (tokens_array* tokens);
 static bool         find_word_in_operation (char* word, tokens_array* tokens);
 
-#define READ_FUNC_IN_GET_FUNC_(operation, formula)                              \
+#define READ_FUNC_IN_GET_FUNC_(operation)                              \
 	if ((tokens -> tokens_array)[*ptr_index].value.value_op == operation)       \
 	{                                                                           \
 		(*ptr_index)++;                                                         \
 																				\
- 		diff_error_t status = get_p (tokens, ptr_index, &value);                \
+ 		diff_error_t status = get_p (tokens, ptr_index, &new_node);                \
 		if (status) {return status;}                                            \
                                                                                 \
-		*ptr_value = formula (value);                                           \
+		*ptr_node = create_new_node (OP, operation, NULL, new_node, NULL, __FILE__, __LINE__);                                           \
 		return status;                                                          \
 	}
 
 
-static diff_error_t get_g    (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
-static diff_error_t get_e    (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
-static diff_error_t get_t    (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
-static diff_error_t get_deg  (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
-static diff_error_t get_func (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
-static diff_error_t get_p    (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
-static diff_error_t get_n    (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
+static diff_error_t get_g    (tokens_array* tokens, size_t* ptr_index, node_t** node);
+static diff_error_t get_e    (tokens_array* tokens, size_t* ptr_index, node_t** node);
+static diff_error_t get_t    (tokens_array* tokens, size_t* ptr_index, node_t** node);
+static diff_error_t get_deg  (tokens_array* tokens, size_t* ptr_index, node_t** node);
+static diff_error_t get_func (tokens_array* tokens, size_t* ptr_index, node_t** node);
+static diff_error_t get_p    (tokens_array* tokens, size_t* ptr_index, node_t** node);
+static diff_error_t get_n    (tokens_array* tokens, size_t* ptr_index, node_t** node);
 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -61,7 +61,7 @@ static diff_error_t get_n    (tokens_array* tokens, size_t* ptr_index, double* p
 		continue;                                    \
 	}
 
-static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str, table_t* table);
+// static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str, table_t* table);
 
 //-----------------------------------------------------------------------------------------------------
 
@@ -161,9 +161,8 @@ diff_error_t print_formula (node_t* node)
 
 //----------------------------------------------------------------------------------------------------------
 
-diff_error_t read_formula (node_t* node, table_t* table)
+diff_error_t read_formula (node_t** ptr_node, table_t* table)
 {
-	assert (node);
 	assert (table);
 
 	char str_formula[MAX_LEN_STR_FORMULA] = "";
@@ -183,136 +182,16 @@ diff_error_t read_formula (node_t* node, table_t* table)
 
 	dump_tokens (&tokens);
 
-	double value = 0;
 	size_t index = 0;
 
-	status = get_g (&tokens, &index, &value);
+	status = get_g (&tokens, &index, ptr_node);
 	if (status) {return status;};
 
-	printf ("value = %lg\n", value);
-	getchar ();
+	//size_t index_str = 0;
 
-	size_t index_str = 0;
-
-	 status = create_tree (node, str_formula, &index_str, table);
+	//status = create_tree (node, str_formula, &index_str, table);
 
 	delete_tokens (&tokens);
-
-	return status;
-}
-
-static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str, table_t* table)
-{
-	assert (node);
-	assert (str_formula);
-	assert (ptr_index_str);
-	assert (table);
-
-	diff_error_t status = NOT_ERROR;
-
-	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
-
-	if (str_formula[*ptr_index_str] == '(')
-	{
-		
-		*ptr_index_str += 1;
-
-		node -> left = create_new_node (NUM, 0, NULL, NULL, node, __FILE__, __LINE__);
-		if (node -> left == NULL) {return NOT_MEMORY_FOR_NEW_NODE;}
-
-		status = create_tree ((node -> left), str_formula, ptr_index_str, table);
-		if (status) {return status;}
-
-		while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
-
-		if (str_formula[*ptr_index_str] == ')') {*ptr_index_str += 1;}
-	}
-
-	//------------------------------------------------------------------------------------------------------  
-
-	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
-
-	char name_operation[MAX_LEN_STR_FORMULA] = "";
-	sscanf (str_formula + *ptr_index_str, "%[^0123456789]", name_operation);
-
-	if (strlen (name_operation) == 0)
-	{
-		sscanf (str_formula + *ptr_index_str, "%[0123456789]", name_operation);
-
-		//printf ("%s\n", name_operation);
-
-		node -> type = NUM;
-		(node -> value).value_num = strtod (name_operation, NULL);
-
-		*ptr_index_str += strlen (name_operation);
-	}
-	else
-	{
-		sscanf (str_formula + *ptr_index_str, "%[^)]", name_operation);
-
-		//printf ("%s\n", name_operation);
-
-		if (strchr (name_operation, '(') == NULL)   //VAR
-		{
-			//printf ("\n\n%s\n\n", name_operation);
-
-			node -> type = VAR;
-
-			status = add_var_in_table (table, name_operation, 0);
-			if (status) {return status;}
-
-			strcpy ((node -> value).value_var, name_operation);
-
-			*ptr_index_str += strlen (name_operation);
-		}
-		else         //OP
-		{
-			sscanf (str_formula + *ptr_index_str, "%[^ (]", name_operation);
-
-			//printf ("!-%s\n", name_operation);
-
-			node -> type = OP;
-
-			for (size_t quantity_operations = 1; quantity_operations == 1; quantity_operations++)
-			{
-				WRITE_NAME_OPERATION_(ADD,  "+");
-				WRITE_NAME_OPERATION_(SUB,  "-");
-				WRITE_NAME_OPERATION_(MUL,  "*");
-				WRITE_NAME_OPERATION_(DIV,  "/");
-				WRITE_NAME_OPERATION_(SIN,  "sin");
-				WRITE_NAME_OPERATION_(COS,  "cos");
-				WRITE_NAME_OPERATION_(SH,   "sh");
-				WRITE_NAME_OPERATION_(CH,   "ch");
-				WRITE_NAME_OPERATION_(SQRT, "sqrt");
-				WRITE_NAME_OPERATION_(LOG,  "log");
-				WRITE_NAME_OPERATION_(LN,   "ln");
-				WRITE_NAME_OPERATION_(DEG,  "^");
-			}
-
-			*ptr_index_str += strlen (name_operation);
-		}
-	}
-
-	//--------------------------------------------------------------------------------------------------------
-
-	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
-
-	if (str_formula[*ptr_index_str] == '(')
-	{
-		*ptr_index_str += 1;
-
-		node -> right = create_new_node (NUM, 0, NULL, NULL, node, __FILE__, __LINE__);
-		if (node -> right == NULL) {return NOT_MEMORY_FOR_NEW_NODE;}
-
-		status = create_tree ((node -> right), str_formula, ptr_index_str, table);
-		if (status) {return status;}
-
-		while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
-
-		if (str_formula[*ptr_index_str] == ')') {*ptr_index_str += 1;}
-	}
-
-	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
 
 	return status;
 }
@@ -521,15 +400,13 @@ static diff_error_t dump_tokens (tokens_array* tokens)
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 
-static diff_error_t get_g (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+static diff_error_t get_g (tokens_array* tokens, size_t* ptr_index, node_t** ptr_node)
 {
 	assert (tokens);
 	assert (ptr_index);
-	assert (ptr_value);
+	assert (ptr_node);
 
-	double value = 0;
-
-	diff_error_t status = get_e (tokens, ptr_index, &value);
+	diff_error_t status = get_e (tokens, ptr_index, ptr_node);
 	if (status) {return status;}
 
 	if (*ptr_index != tokens -> index_free_token)
@@ -542,21 +419,33 @@ static diff_error_t get_g (tokens_array* tokens, size_t* ptr_index, double* ptr_
 		return ERROR_IN_GET_G;
 	}
 
-	*ptr_value = value;
 	(*ptr_index)++;
 
 	return status;
 }
 
-static diff_error_t get_n (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+static diff_error_t get_n (tokens_array* tokens, size_t* ptr_index, node_t** ptr_node)
 {
 	assert (tokens);
 	assert (ptr_index);
-	assert (ptr_value);
+	assert (ptr_node);
 
 	if ((tokens -> tokens_array)[*ptr_index].type == NUM)
 	{
-		*ptr_value = (tokens -> tokens_array)[*ptr_index].value.value_num;
+		*ptr_node = create_new_node (NUM, (tokens -> tokens_array)[*ptr_index].value.value_num, NULL, NULL, NULL, __FILE__, __LINE__);
+		(*ptr_index)++;
+
+		return NOT_ERROR;
+	}
+
+	else if ((tokens -> tokens_array)[*ptr_index].type == VAR)
+	{
+		*ptr_node = create_new_node (VAR, 0, NULL, NULL, NULL, __FILE__, __LINE__);
+
+		if (*ptr_node == NULL) {return NOT_MEMORY_FOR_NEW_NODE;}
+
+		strcpy (((*ptr_node) -> value).value_var, (tokens -> tokens_array)[*ptr_index].value.value_var);
+
 		(*ptr_index)++;
 
 		return NOT_ERROR;
@@ -566,24 +455,24 @@ static diff_error_t get_n (tokens_array* tokens, size_t* ptr_index, double* ptr_
 	{
 		printf ("Error in %s:%d\n\n", __FILE__, __LINE__);
 		printf ("Error from 'get_n' on position: %ld\n\n"
-		        "'get_n' wait: num (type == 1), but find type == %d\n\n", 
+		        "'get_n' wait: num (type == 1) or var (type == 2), but find OP (type == %d)\n\n", 
 				*ptr_index, (tokens -> tokens_array)[*ptr_index].type);
 
 		return ERROR_IN_GET_N;
 	}
 }
 
-static diff_error_t get_e (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+static diff_error_t get_e (tokens_array* tokens, size_t* ptr_index, node_t** ptr_node)
 {
 	assert (tokens);
 	assert (ptr_index);
-	assert (ptr_value);
+	assert (ptr_node);
 
-	double value_1   = 0;
-	double value_2   = 0;
 	size_t old_index = 0;
 
-	diff_error_t status = get_t (tokens, ptr_index, &value_1);
+	node_t* new_node = NULL;
+
+	diff_error_t status = get_t (tokens, ptr_index, ptr_node);
 	if (status) {return status;}
 
 	while ((tokens -> tokens_array)[*ptr_index].type == OP && 
@@ -594,36 +483,33 @@ static diff_error_t get_e (tokens_array* tokens, size_t* ptr_index, double* ptr_
 
 		(*ptr_index)++;
 
-		status = get_t (tokens, ptr_index, &value_2);
+		status = get_t (tokens, ptr_index, &new_node);
 		if (status) {return status;}
 
 		if ((tokens -> tokens_array)[old_index].value.value_op == ADD)
 		{
-			value_1 += value_2;
+			*ptr_node = create_new_node (OP, ADD, *ptr_node, new_node, NULL, __FILE__, __LINE__);
 		}
 
 		else  //(tokens -> tokens_array)[old_index].value.value_op == SUB)
 		{
-			value_1 -= value_2;
+			*ptr_node = create_new_node (OP, SUB, *ptr_node, new_node, NULL, __FILE__, __LINE__);
 		}
 	}
-
-	*ptr_value = value_1;
 
 	return status;
 }
 
-static diff_error_t get_t (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+static diff_error_t get_t (tokens_array* tokens, size_t* ptr_index, node_t** ptr_node)
 {
 	assert (tokens);
 	assert (ptr_index);
-	assert (ptr_value);
+	assert (ptr_node);
 
-	double value_1   = 0;
-	double value_2   = 0;
+	node_t* new_node = NULL;
 	size_t old_index = 0;
 
-	diff_error_t status = get_deg (tokens, ptr_index, &value_1);
+	diff_error_t status = get_deg (tokens, ptr_index, ptr_node);
 	if (status) {return status;}
 
 	while ((tokens -> tokens_array)[*ptr_index].type == OP &&
@@ -634,32 +520,28 @@ static diff_error_t get_t (tokens_array* tokens, size_t* ptr_index, double* ptr_
 
 		(*ptr_index)++;
 
-		status = get_deg (tokens, ptr_index, &value_2);
+		status = get_deg (tokens, ptr_index, &new_node);
 		if (status) {return status;}
 
 		if ((tokens -> tokens_array)[old_index].value.value_op == MUL)
 		{
-			value_1 *= value_2;
+			*ptr_node = create_new_node (OP, MUL, *ptr_node, new_node, NULL, __FILE__, __LINE__);
 		}
 
 		else  //(tokens -> tokens_array)[old_index].value.value_op == DIV)
 		{
-			value_1 /= value_2;
+			*ptr_node = create_new_node (OP, DIV, *ptr_node, new_node, NULL, __FILE__, __LINE__);
 		}
 	}
-
-	*ptr_value = value_1;
 
 	return status;
 }
 
-static diff_error_t get_p (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+static diff_error_t get_p (tokens_array* tokens, size_t* ptr_index, node_t** ptr_node)
 {
 	assert (tokens);
 	assert (ptr_index);
-	assert (ptr_value);
-
-	double value = 0;
+	assert (ptr_node);
 
 	diff_error_t status = NOT_ERROR;
 
@@ -670,7 +552,7 @@ static diff_error_t get_p (tokens_array* tokens, size_t* ptr_index, double* ptr_
 	{
 		(*ptr_index)++;
 
-		status = get_e (tokens, ptr_index, &value);
+		status = get_e (tokens, ptr_index, ptr_node);
 		if (status) {return status;}
 
 		if ((tokens -> tokens_array)[*ptr_index].type == VAR && 
@@ -686,101 +568,70 @@ static diff_error_t get_p (tokens_array* tokens, size_t* ptr_index, double* ptr_
 
 		(*ptr_index)++;
 
-		*ptr_value = value;
-
 		return status;
 	}
 
 	else
 	{
-		status = get_n (tokens, ptr_index, &value);
-		if (status) {return status;}
-
-		*ptr_value = value;
+		status = get_n (tokens, ptr_index, ptr_node);
 
 		return status;
 	}
 }
 
-static diff_error_t get_deg (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+static diff_error_t get_deg (tokens_array* tokens, size_t* ptr_index, node_t** ptr_node)
 {
 	assert (tokens);
 	assert (ptr_index);
-	assert (ptr_value);
+	assert (ptr_node);
 
-	double value = 0;
+	node_t* new_node = NULL;
 
-	size_t index_deg = 0;
-	
-	double degrees[MAX_LEN_DEG] = {};
-
-	diff_error_t status = get_func (tokens, ptr_index, degrees + index_deg);
+	diff_error_t status = get_func (tokens, ptr_index, ptr_node);
 	if (status) {return status;}
 
-	index_deg++;
-
-	while ((tokens -> tokens_array)[*ptr_index].type == OP && 
-	       (tokens -> tokens_array)[*ptr_index].value.value_op == DEG)
+	while ((tokens -> tokens_array)[*ptr_index].type == OP &&
+	      (tokens -> tokens_array)[*ptr_index].value.value_op == DEG)
 	{
 		(*ptr_index)++;
 
-		status = get_func (tokens, ptr_index, degrees + index_deg);
+		status = get_func (tokens, ptr_index, &new_node);
 		if (status) {return status;}
-
-		index_deg++;
+		
+		*ptr_node = create_new_node (OP, DEG, *ptr_node, new_node, NULL, __FILE__, __LINE__);
 	}
-
-	index_deg -= 1;
-
-	value = degrees[index_deg];
-
-	//printf ("%lg\n", value);
-
-	for (long index = index_deg - 1; index >= 0; index--)
-	{
-		//printf ("%lg\n", degrees[index]);
-
-		value = pow (degrees[index], value);
-
-		//printf ("%lg\n", value);
-	}
-
-	*ptr_value = value; 
 
 	return status;
 }
 
-static diff_error_t get_func (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+static diff_error_t get_func (tokens_array* tokens, size_t* ptr_index, node_t** ptr_node)
 {
 	assert (tokens);
 	assert (ptr_index);
-	assert (ptr_value);
+	assert (ptr_node);
 
-	double value = 0;
+	node_t* new_node = NULL;
 
 	if ((tokens -> tokens_array)[*ptr_index].type == OP)
 	{
-		READ_FUNC_IN_GET_FUNC_(SIN, sin);
-		READ_FUNC_IN_GET_FUNC_(COS, cos);
-		READ_FUNC_IN_GET_FUNC_(SH, sinh);
-		READ_FUNC_IN_GET_FUNC_(CH, cosh);
-		READ_FUNC_IN_GET_FUNC_(SQRT, sqrt);
-		READ_FUNC_IN_GET_FUNC_(LN, log);
-
+		READ_FUNC_IN_GET_FUNC_(SIN);
+		READ_FUNC_IN_GET_FUNC_(COS);
+		READ_FUNC_IN_GET_FUNC_(SH);
+		READ_FUNC_IN_GET_FUNC_(CH);
+		READ_FUNC_IN_GET_FUNC_(SQRT);
+		READ_FUNC_IN_GET_FUNC_(LN);
 
 		if ((tokens -> tokens_array)[*ptr_index].value.value_op == LOG)
 		{
 			(*ptr_index)++;
 
-			diff_error_t status = get_p (tokens, ptr_index, &value);
+			diff_error_t status = get_p (tokens, ptr_index, ptr_node);
 			if (status) {return status;}
 
-			*ptr_value = 1 / log (value);
-
-			status = get_p (tokens, ptr_index, &value);
+			status = get_p (tokens, ptr_index, &new_node);
 			if (status) {return status;}
 
-			*ptr_value *= log (value);
+			*ptr_node = create_new_node (OP, LOG, *ptr_node, new_node, NULL, __FILE__, __LINE__);
 
 			return status;
 		}
@@ -788,7 +639,7 @@ static diff_error_t get_func (tokens_array* tokens, size_t* ptr_index, double* p
 
 	else
 	{
-		diff_error_t status = get_p (tokens, ptr_index, ptr_value);
+		diff_error_t status = get_p (tokens, ptr_index, ptr_node);
 		if (status) {return status;}
 	}
 
@@ -796,3 +647,118 @@ static diff_error_t get_func (tokens_array* tokens, size_t* ptr_index, double* p
 }
 
 
+// static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str, table_t* table)
+// {
+// 	assert (node);
+// 	assert (str_formula);
+// 	assert (ptr_index_str);
+// 	assert (table);
+
+// 	diff_error_t status = NOT_ERROR;
+
+// 	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+// 	if (str_formula[*ptr_index_str] == '(')
+// 	{
+		
+// 		*ptr_index_str += 1;
+
+// 		node -> left = create_new_node (NUM, 0, NULL, NULL, node, __FILE__, __LINE__);
+// 		if (node -> left == NULL) {return NOT_MEMORY_FOR_NEW_NODE;}
+
+// 		status = create_tree ((node -> left), str_formula, ptr_index_str, table);
+// 		if (status) {return status;}
+
+// 		while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+// 		if (str_formula[*ptr_index_str] == ')') {*ptr_index_str += 1;}
+// 	}
+
+// 	//------------------------------------------------------------------------------------------------------  
+
+// 	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+// 	char name_operation[MAX_LEN_STR_FORMULA] = "";
+// 	sscanf (str_formula + *ptr_index_str, "%[^0123456789]", name_operation);
+
+// 	if (strlen (name_operation) == 0)
+// 	{
+// 		sscanf (str_formula + *ptr_index_str, "%[0123456789]", name_operation);
+
+// 		//printf ("%s\n", name_operation);
+
+// 		node -> type = NUM;
+// 		(node -> value).value_num = strtod (name_operation, NULL);
+
+// 		*ptr_index_str += strlen (name_operation);
+// 	}
+// 	else
+// 	{
+// 		sscanf (str_formula + *ptr_index_str, "%[^)]", name_operation);
+
+// 		//printf ("%s\n", name_operation);
+
+// 		if (strchr (name_operation, '(') == NULL)   //VAR
+// 		{
+// 			//printf ("\n\n%s\n\n", name_operation);
+
+// 			node -> type = VAR;
+
+// 			status = add_var_in_table (table, name_operation, 0);
+// 			if (status) {return status;}
+
+// 			strcpy ((node -> value).value_var, name_operation);
+
+// 			*ptr_index_str += strlen (name_operation);
+// 		}
+// 		else         //OP
+// 		{
+// 			sscanf (str_formula + *ptr_index_str, "%[^ (]", name_operation);
+
+// 			//printf ("!-%s\n", name_operation);
+
+// 			node -> type = OP;
+
+// 			for (size_t quantity_operations = 1; quantity_operations == 1; quantity_operations++)
+// 			{
+// 				WRITE_NAME_OPERATION_(ADD,  "+");
+// 				WRITE_NAME_OPERATION_(SUB,  "-");
+// 				WRITE_NAME_OPERATION_(MUL,  "*");
+// 				WRITE_NAME_OPERATION_(DIV,  "/");
+// 				WRITE_NAME_OPERATION_(SIN,  "sin");
+// 				WRITE_NAME_OPERATION_(COS,  "cos");
+// 				WRITE_NAME_OPERATION_(SH,   "sh");
+// 				WRITE_NAME_OPERATION_(CH,   "ch");
+// 				WRITE_NAME_OPERATION_(SQRT, "sqrt");
+// 				WRITE_NAME_OPERATION_(LOG,  "log");
+// 				WRITE_NAME_OPERATION_(LN,   "ln");
+// 				WRITE_NAME_OPERATION_(DEG,  "^");
+// 			}
+
+// 			*ptr_index_str += strlen (name_operation);
+// 		}
+// 	}
+
+// 	//--------------------------------------------------------------------------------------------------------
+
+// 	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+// 	if (str_formula[*ptr_index_str] == '(')
+// 	{
+// 		*ptr_index_str += 1;
+
+// 		node -> right = create_new_node (NUM, 0, NULL, NULL, node, __FILE__, __LINE__);
+// 		if (node -> right == NULL) {return NOT_MEMORY_FOR_NEW_NODE;}
+
+// 		status = create_tree ((node -> right), str_formula, ptr_index_str, table);
+// 		if (status) {return status;}
+
+// 		while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+// 		if (str_formula[*ptr_index_str] == ')') {*ptr_index_str += 1;}
+// 	}
+
+// 	while (str_formula[*ptr_index_str] == ' ') {(*ptr_index_str)++;}
+
+// 	return status;
+// }
