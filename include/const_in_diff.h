@@ -8,6 +8,7 @@ const size_t MAX_LEN_STR_FORMULA     = 70;
 const size_t MIN_SIZE_TABLE_VAR      = 15;
 const size_t MAX_LEN_NAME_VAR        = 10;
 const size_t MIN_SIZE_TOKENS_ARRAY   = 10;
+const size_t MAX_LEN_DEG             = 100;
 
 //-------------------------------------------
 
@@ -78,7 +79,15 @@ enum diff_error_t
 	NOT_FIND_OP                 = 4,
 	NOT_MEMORY_FOR_TABLE_VAR    = 5,
 	NOT_MEMORY_FOR_NEW_NODE     = 6,
-	NOT_MEMORY_FOR_TOKENS_ARRAY = 7
+	NOT_MEMORY_FOR_TOKENS_ARRAY = 7,
+
+	ERROR_IN_GET_G    = 8,
+	ERROR_IN_GET_E    = 9,
+	ERROR_IN_GET_T    = 10,
+	ERROR_IN_GET_DEG  = 11,
+	ERROR_IN_GET_FUNC = 12,
+	ERROR_IN_GET_P    = 13,
+	ERROR_IN_GET_N    = 14
 };
 
 //--------------------------------------------------------------

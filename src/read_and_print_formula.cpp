@@ -2,18 +2,19 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "const_in_diff.h"
 #include "new_node.h"
 #include "table_of_var.h"
 #include "read_and_print_formula.h"
 
-#define WRITE_WORD_IN_OP_(operation, name)     \
-	if (strcmp (word, name) == 0)               \
-	{                                                 \
-		(tokens -> tokens_array)[tokens -> index_free_token].type           = OP;  \
-		(tokens -> tokens_array)[tokens -> index_free_token].value.value_op = operation;               \
-		return true;                                    \
+#define WRITE_WORD_IN_OP_(operation, name)                                                           \
+	if (strcmp (word, name) == 0)                 													 \
+	{                                                 												 \
+		(tokens -> tokens_array)[tokens -> index_free_token].type           = OP;  					 \
+		(tokens -> tokens_array)[tokens -> index_free_token].value.value_op = operation;             \
+		return true;                                   												 \
 	}
 
 static diff_error_t lexical_analysis 	   (char* str_formula, tokens_array* tokens, table_t* table);
@@ -22,6 +23,27 @@ static diff_error_t delete_tokens    	   (tokens_array* tokens);
 static diff_error_t realloc_tokens         (tokens_array* tokens);
 static diff_error_t dump_tokens            (tokens_array* tokens);
 static bool         find_word_in_operation (char* word, tokens_array* tokens);
+
+#define READ_FUNC_IN_GET_FUNC_(operation, formula)                              \
+	if ((tokens -> tokens_array)[*ptr_index].value.value_op == operation)       \
+	{                                                                           \
+		(*ptr_index)++;                                                         \
+																				\
+ 		diff_error_t status = get_p (tokens, ptr_index, &value);                \
+		if (status) {return status;}                                            \
+                                                                                \
+		*ptr_value = formula (value);                                           \
+		return status;                                                          \
+	}
+
+
+static diff_error_t get_g    (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
+static diff_error_t get_e    (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
+static diff_error_t get_t    (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
+static diff_error_t get_deg  (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
+static diff_error_t get_func (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
+static diff_error_t get_p    (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
+static diff_error_t get_n    (tokens_array* tokens, size_t* ptr_index, double* ptr_value);
 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -160,6 +182,14 @@ diff_error_t read_formula (node_t* node, table_t* table)
 	if (status) {return status;}
 
 	dump_tokens (&tokens);
+
+	double value = 0;
+	size_t index = 0;
+
+	status = get_g (&tokens, &index, &value);
+	if (status) {return status;};
+
+	printf ("value = %lg\n", value);
 	getchar ();
 
 	size_t index_str = 0;
@@ -330,11 +360,11 @@ static diff_error_t lexical_analysis (char* str_formula, tokens_array* tokens, t
 
 			int shift_index_str = 0;
 
-			sscanf (str_formula + index_str, "%[^() ]%n", word, &shift_index_str);
+			sscanf (str_formula + index_str, "%[^()+-^/* ]%n", word, &shift_index_str);
 
 			index_str += shift_index_str;
 
-			if (shift_index_str == 0)    //str_formula[index_str] == '(' || str_formula[index_str] == ')'
+			if (shift_index_str == 0)    //str_formula[index_str] in '(^()+-^/*'
 			{
 				word[0] = str_formula[index_str];
 
@@ -488,4 +518,281 @@ static diff_error_t dump_tokens (tokens_array* tokens)
 
 	return NOT_ERROR;
 }
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+static diff_error_t get_g (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+{
+	assert (tokens);
+	assert (ptr_index);
+	assert (ptr_value);
+
+	double value = 0;
+
+	diff_error_t status = get_e (tokens, ptr_index, &value);
+	if (status) {return status;}
+
+	if (*ptr_index != tokens -> index_free_token)
+	{
+		printf ("Error in %s:%d\n\n", __FILE__, __LINE__);
+		printf ("Error from 'get_g' wait position: %ld, "
+		        "but get position: '%ld'\n\n", 
+				tokens -> index_free_token, *ptr_index);
+
+		return ERROR_IN_GET_G;
+	}
+
+	*ptr_value = value;
+	(*ptr_index)++;
+
+	return status;
+}
+
+static diff_error_t get_n (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+{
+	assert (tokens);
+	assert (ptr_index);
+	assert (ptr_value);
+
+	if ((tokens -> tokens_array)[*ptr_index].type == NUM)
+	{
+		*ptr_value = (tokens -> tokens_array)[*ptr_index].value.value_num;
+		(*ptr_index)++;
+
+		return NOT_ERROR;
+	}
+
+	else
+	{
+		printf ("Error in %s:%d\n\n", __FILE__, __LINE__);
+		printf ("Error from 'get_n' on position: %ld\n\n"
+		        "'get_n' wait: num (type == 1), but find type == %d\n\n", 
+				*ptr_index, (tokens -> tokens_array)[*ptr_index].type);
+
+		return ERROR_IN_GET_N;
+	}
+}
+
+static diff_error_t get_e (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+{
+	assert (tokens);
+	assert (ptr_index);
+	assert (ptr_value);
+
+	double value_1   = 0;
+	double value_2   = 0;
+	size_t old_index = 0;
+
+	diff_error_t status = get_t (tokens, ptr_index, &value_1);
+	if (status) {return status;}
+
+	while ((tokens -> tokens_array)[*ptr_index].type == OP && 
+	      ((tokens -> tokens_array)[*ptr_index].value.value_op == ADD || 
+		   (tokens -> tokens_array)[*ptr_index].value.value_op == SUB))
+	{
+		old_index = *ptr_index;
+
+		(*ptr_index)++;
+
+		status = get_t (tokens, ptr_index, &value_2);
+		if (status) {return status;}
+
+		if ((tokens -> tokens_array)[old_index].value.value_op == ADD)
+		{
+			value_1 += value_2;
+		}
+
+		else  //(tokens -> tokens_array)[old_index].value.value_op == SUB)
+		{
+			value_1 -= value_2;
+		}
+	}
+
+	*ptr_value = value_1;
+
+	return status;
+}
+
+static diff_error_t get_t (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+{
+	assert (tokens);
+	assert (ptr_index);
+	assert (ptr_value);
+
+	double value_1   = 0;
+	double value_2   = 0;
+	size_t old_index = 0;
+
+	diff_error_t status = get_deg (tokens, ptr_index, &value_1);
+	if (status) {return status;}
+
+	while ((tokens -> tokens_array)[*ptr_index].type == OP &&
+	      ((tokens -> tokens_array)[*ptr_index].value.value_op == MUL || 
+		   (tokens -> tokens_array)[*ptr_index].value.value_op == DIV))
+	{
+		old_index = *ptr_index;
+
+		(*ptr_index)++;
+
+		status = get_deg (tokens, ptr_index, &value_2);
+		if (status) {return status;}
+
+		if ((tokens -> tokens_array)[old_index].value.value_op == MUL)
+		{
+			value_1 *= value_2;
+		}
+
+		else  //(tokens -> tokens_array)[old_index].value.value_op == DIV)
+		{
+			value_1 /= value_2;
+		}
+	}
+
+	*ptr_value = value_1;
+
+	return status;
+}
+
+static diff_error_t get_p (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+{
+	assert (tokens);
+	assert (ptr_index);
+	assert (ptr_value);
+
+	double value = 0;
+
+	diff_error_t status = NOT_ERROR;
+
+	//printf ("<%s>\n", (tokens -> tokens_array)[*ptr_index].value.value_var);
+
+	if ((tokens -> tokens_array)[*ptr_index].type == VAR && 
+	    (tokens -> tokens_array)[*ptr_index].value.value_var[0] == '(')
+	{
+		(*ptr_index)++;
+
+		status = get_e (tokens, ptr_index, &value);
+		if (status) {return status;}
+
+		if ((tokens -> tokens_array)[*ptr_index].type == VAR && 
+		    (tokens -> tokens_array)[*ptr_index].value.value_var[0] != ')')
+		{
+			printf ("Error in %s:%d\n\n", __FILE__, __LINE__);
+			printf ("Error from 'get_p' in str on position: %ld\n\n"
+			        "'get_p' wait: ')', but find '%c'\n\n", 
+					*ptr_index, (tokens -> tokens_array)[*ptr_index].value.value_var[0]);
+
+			return ERROR_IN_GET_P;
+		}
+
+		(*ptr_index)++;
+
+		*ptr_value = value;
+
+		return status;
+	}
+
+	else
+	{
+		status = get_n (tokens, ptr_index, &value);
+		if (status) {return status;}
+
+		*ptr_value = value;
+
+		return status;
+	}
+}
+
+static diff_error_t get_deg (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+{
+	assert (tokens);
+	assert (ptr_index);
+	assert (ptr_value);
+
+	double value = 0;
+
+	size_t index_deg = 0;
+	
+	double degrees[MAX_LEN_DEG] = {};
+
+	diff_error_t status = get_func (tokens, ptr_index, degrees + index_deg);
+	if (status) {return status;}
+
+	index_deg++;
+
+	while ((tokens -> tokens_array)[*ptr_index].type == OP && 
+	       (tokens -> tokens_array)[*ptr_index].value.value_op == DEG)
+	{
+		(*ptr_index)++;
+
+		status = get_func (tokens, ptr_index, degrees + index_deg);
+		if (status) {return status;}
+
+		index_deg++;
+	}
+
+	index_deg -= 1;
+
+	value = degrees[index_deg];
+
+	//printf ("%lg\n", value);
+
+	for (long index = index_deg - 1; index >= 0; index--)
+	{
+		//printf ("%lg\n", degrees[index]);
+
+		value = pow (degrees[index], value);
+
+		//printf ("%lg\n", value);
+	}
+
+	*ptr_value = value; 
+
+	return status;
+}
+
+static diff_error_t get_func (tokens_array* tokens, size_t* ptr_index, double* ptr_value)
+{
+	assert (tokens);
+	assert (ptr_index);
+	assert (ptr_value);
+
+	double value = 0;
+
+	if ((tokens -> tokens_array)[*ptr_index].type == OP)
+	{
+		READ_FUNC_IN_GET_FUNC_(SIN, sin);
+		READ_FUNC_IN_GET_FUNC_(COS, cos);
+		READ_FUNC_IN_GET_FUNC_(SH, sinh);
+		READ_FUNC_IN_GET_FUNC_(CH, cosh);
+		READ_FUNC_IN_GET_FUNC_(SQRT, sqrt);
+		READ_FUNC_IN_GET_FUNC_(LN, log);
+
+
+		if ((tokens -> tokens_array)[*ptr_index].value.value_op == LOG)
+		{
+			(*ptr_index)++;
+
+			diff_error_t status = get_p (tokens, ptr_index, &value);
+			if (status) {return status;}
+
+			*ptr_value = 1 / log (value);
+
+			status = get_p (tokens, ptr_index, &value);
+			if (status) {return status;}
+
+			*ptr_value *= log (value);
+
+			return status;
+		}
+	}
+
+	else
+	{
+		diff_error_t status = get_p (tokens, ptr_index, ptr_value);
+		if (status) {return status;}
+	}
+
+	return NOT_ERROR;
+}
+
 
