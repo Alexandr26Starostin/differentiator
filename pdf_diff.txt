@@ -1,0 +1,372 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[russian,english]{babel}
+\usepackage[T2A]{fontenc}
+\usepackage[left=10mm, top=20mm, right=18mm, bottom=15mm, footskip=10mm]{geometry}
+\usepackage{indentfirst}
+\usepackage{amsmath,amssymb}
+\usepackage[italicdiff]{physics}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\usepackage{wrapfig}
+\usepackage{pgfplots}
+
+\usepackage{caption}
+\captionsetup[figure]{name=Рисунок}
+\captionsetup[table]{name=Таблица}
+
+\title{\underline{Дифференциатор}}
+\author{Старостин Александр, Б01-401}
+\date {26 декабря, 2024 год}
+
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\section{Взятие производной функции}
+Нам дана функция:
+\[ f(x) =  \sin{(2 \cdot x)}  +  \cos{( {x}^{2} )}  \]
+
+Её производная равна:
+\[ f'(x) =  \cos{(2 \cdot x)}  \cdot 2 + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Посмотрим, как мы её взяли.
+Из здравого смысла следует:
+\[( {x}^{2} )' = 2 \cdot  {x}^{1}  \]
+
+Советские сперматозоиды установили, что:
+\[( \cos{( {x}^{2} )} )' = -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Очевидно (иначе тебе следует научиться думать!!!):
+\[(2 \cdot x)' = 2 \]
+
+Школьникам известно:
+\[( \sin{(2 \cdot x)} )' =  \cos{(2 \cdot x)}  \cdot 2 \]
+
+Знамка говорила:
+\[( \sin{(2 \cdot x)}  +  \cos{( {x}^{2} )} )' =  \cos{(2 \cdot x)}  \cdot 2 + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+\section{Построение графика функции}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}
+[
+	legend pos = north west,
+	xlabel = {$x$},
+	ylabel = {$f(x)$},
+	width = 300,
+	height = 300,
+	restrict x to domain=-10:10,
+	restrict y to domain=-2:2,
+	grid = major,
+	enlargelimits=true,
+]
+\legend{
+	$f(x)$
+}\addplot[green, samples=750]{((sin(deg(((2)*(x)))))+(cos(deg(((x)^(2))))))};\end{axis}
+\end{tikzpicture}
+\caption{График функции}
+\end{figure}
+\section{Разложение функции по Тейлору в точке x_0}
+
+\[ x_0 = 3\]
+
+Найдём все производные функции, нужных нам порядков:
+\[ f^{(0)}(x) =  \sin{(2 \cdot x)}  +  \cos{( {x}^{2} )}  \]
+
+Найдём её производную:
+
+\newpage
+Аналогично:
+\[( {x}^{2} )' = 2 \cdot  {x}^{1}  \]
+
+Отвечаю, что:
+\[( \cos{( {x}^{2} )} )' = -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Зуб даю:
+\[(2 \cdot x)' = 2 \]
+
+Ну.... Поверь:
+\[( \sin{(2 \cdot x)} )' =  \cos{(2 \cdot x)}  \cdot 2 \]
+
+Поверь, что это так:
+\[( \sin{(2 \cdot x)}  +  \cos{( {x}^{2} )} )' =  \cos{(2 \cdot x)}  \cdot 2 + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+\[ f^{(1)}(x) =  \cos{(2 \cdot x)}  \cdot 2 + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Найдём её производную:
+
+\newpage
+Только тёмные не знают, что:
+\[( {x}^{1} )' =  {x}^{0}  \]
+
+Неужели сам не можешь взять...... Зачем на ФизТех пошёл?... Очевидно:
+\[(2 \cdot  {x}^{1} )' = 2 \cdot  {x}^{0}  \]
+
+Древние греки знали, а ты, видимо, - нет, что:
+Смотри и учись:\[( {x}^{2} )' = 2 \cdot  {x}^{1}  \]
+
+Из здравого смысла следует:
+\[( \sin{( {x}^{2} )} )' =  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Советские сперматозоиды установили, что:
+\[( \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1} )' =  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0}  \]
+
+Очевидно (иначе тебе следует научиться думать!!!):
+\[(-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1} )' = -1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \]
+
+Школьникам известно:
+\[(2 \cdot x)' = 2 \]
+
+Знамка говорила:
+\[( \cos{(2 \cdot x)} )' = -1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \]
+
+Аналогично:
+\[( \cos{(2 \cdot x)}  \cdot 2)' = -1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \cdot 2 \]
+
+Отвечаю, что:
+\[( \cos{(2 \cdot x)}  \cdot 2 + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1} )' = -1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \cdot 2 + -1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \]
+
+\[ f^{(2)}(x) = -1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \cdot 2 + -1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \]
+
+Найдём её производную:
+
+\newpage
+Зуб даю:
+\[( {x}^{0} )' = 0 \]
+
+Ну.... Поверь:
+\[(2 \cdot  {x}^{0} )' = 0 \]
+
+Поверь, что это так:
+\[( {x}^{2} )' = 2 \cdot  {x}^{1}  \]
+
+Только тёмные не знают, что:
+\[( \sin{( {x}^{2} )} )' =  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Неужели сам не можешь взять...... Зачем на ФизТех пошёл?... Очевидно:
+\[( \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} )' =  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  \]
+
+Древние греки знали, а ты, видимо, - нет, что:
+Смотри и учись:\[( {x}^{1} )' =  {x}^{0}  \]
+
+Из здравого смысла следует:
+\[(2 \cdot  {x}^{1} )' = 2 \cdot  {x}^{0}  \]
+
+Советские сперматозоиды установили, что:
+\[( {x}^{1} )' =  {x}^{0}  \]
+
+Очевидно (иначе тебе следует научиться думать!!!):
+\[(2 \cdot  {x}^{1} )' = 2 \cdot  {x}^{0}  \]
+
+Школьникам известно:
+\[( {x}^{2} )' = 2 \cdot  {x}^{1}  \]
+
+Знамка говорила:
+\[( \cos{( {x}^{2} )} )' = -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Аналогично:
+\[( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1} )' = -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0}  \]
+
+Отвечаю, что:
+\[( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1} )' = (-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  \]
+
+Зуб даю:
+\[( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} )' = (-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  \]
+
+Ну.... Поверь:
+\[(-1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ))' = -1 \cdot ((-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0} ) \]
+
+Поверь, что это так:
+\[(2 \cdot x)' = 2 \]
+
+Только тёмные не знают, что:
+\[( \sin{(2 \cdot x)} )' =  \cos{(2 \cdot x)}  \cdot 2 \]
+
+Неужели сам не можешь взять...... Зачем на ФизТех пошёл?... Очевидно:
+\[( \sin{(2 \cdot x)}  \cdot 2)' =  \cos{(2 \cdot x)}  \cdot 2 \cdot 2 \]
+
+Древние греки знали, а ты, видимо, - нет, что:
+Смотри и учись:\[(-1 \cdot  \sin{(2 \cdot x)}  \cdot 2)' = -1 \cdot  \cos{(2 \cdot x)}  \cdot 2 \cdot 2 \]
+
+Из здравого смысла следует:
+\[(-1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \cdot 2)' = -1 \cdot  \cos{(2 \cdot x)}  \cdot 2 \cdot 2 \cdot 2 \]
+
+Советские сперматозоиды установили, что:
+\[(-1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \cdot 2 + -1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ))' = -1 \cdot  \cos{(2 \cdot x)}  \cdot 2 \cdot 2 \cdot 2 + -1 \cdot ((-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0} ) \]
+
+\[ f^{(3)}(x) = -1 \cdot  \cos{(2 \cdot x)}  \cdot 2 \cdot 2 \cdot 2 + -1 \cdot ((-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0} ) \]
+
+Найдём её производную:
+
+\newpage
+Очевидно (иначе тебе следует научиться думать!!!):
+\[( {x}^{0} )' = 0 \]
+
+Школьникам известно:
+\[(2 \cdot  {x}^{0} )' = 0 \]
+
+Знамка говорила:
+\[( {x}^{1} )' =  {x}^{0}  \]
+
+Аналогично:
+\[(2 \cdot  {x}^{1} )' = 2 \cdot  {x}^{0}  \]
+
+Отвечаю, что:
+\[( {x}^{2} )' = 2 \cdot  {x}^{1}  \]
+
+Зуб даю:
+\[( \cos{( {x}^{2} )} )' = -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Ну.... Поверь:
+\[( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1} )' = -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0}  \]
+
+Поверь, что это так:
+\[( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0} )' = (-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{0}  \]
+
+Только тёмные не знают, что:
+\[( {x}^{0} )' = 0 \]
+
+Неужели сам не можешь взять...... Зачем на ФизТех пошёл?... Очевидно:
+\[(2 \cdot  {x}^{0} )' = 0 \]
+
+Древние греки знали, а ты, видимо, - нет, что:
+Смотри и учись:\[( {x}^{1} )' =  {x}^{0}  \]
+
+Из здравого смысла следует:
+\[(2 \cdot  {x}^{1} )' = 2 \cdot  {x}^{0}  \]
+
+Советские сперматозоиды установили, что:
+\[( {x}^{2} )' = 2 \cdot  {x}^{1}  \]
+
+Очевидно (иначе тебе следует научиться думать!!!):
+\[( \cos{( {x}^{2} )} )' = -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Школьникам известно:
+\[( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1} )' = -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0}  \]
+
+Знамка говорила:
+\[( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0} )' = (-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{0}  \]
+
+Аналогично:
+\[( {x}^{1} )' =  {x}^{0}  \]
+
+Отвечаю, что:
+\[(2 \cdot  {x}^{1} )' = 2 \cdot  {x}^{0}  \]
+
+Зуб даю:
+\[( {x}^{0} )' = 0 \]
+
+Ну.... Поверь:
+\[(2 \cdot  {x}^{0} )' = 0 \]
+
+Поверь, что это так:
+\[( {x}^{2} )' = 2 \cdot  {x}^{1}  \]
+
+Только тёмные не знают, что:
+\[( \cos{( {x}^{2} )} )' = -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Неужели сам не можешь взять...... Зачем на ФизТех пошёл?... Очевидно:
+\[( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} )' = -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  \]
+
+Древние греки знали, а ты, видимо, - нет, что:
+Смотри и учись:\[( {x}^{1} )' =  {x}^{0}  \]
+
+Из здравого смысла следует:
+\[(2 \cdot  {x}^{1} )' = 2 \cdot  {x}^{0}  \]
+
+Советские сперматозоиды установили, что:
+\[( {x}^{1} )' =  {x}^{0}  \]
+
+Очевидно (иначе тебе следует научиться думать!!!):
+\[(2 \cdot  {x}^{1} )' = 2 \cdot  {x}^{0}  \]
+
+Школьникам известно:
+\[( {x}^{2} )' = 2 \cdot  {x}^{1}  \]
+
+Знамка говорила:
+\[( \sin{( {x}^{2} )} )' =  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \]
+
+Аналогично:
+\[( \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1} )' =  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0}  \]
+
+Отвечаю, что:
+\[(-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1} )' = -1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \]
+
+Зуб даю:
+\[(-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1} )' = -1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  \]
+
+Ну.... Поверь:
+\[(-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} )' = -1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  \]
+
+Поверь, что это так:
+\[((-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1} )' = (-1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  + (-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{0}  \]
+
+Только тёмные не знают, что:
+\[((-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0} )' = (-1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  + (-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{0}  + (-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{0}  \]
+
+Неужели сам не можешь взять...... Зачем на ФизТех пошёл?... Очевидно:
+\[(2 \cdot x)' = 2 \]
+
+Древние греки знали, а ты, видимо, - нет, что:
+Смотри и учись:\[( \cos{(2 \cdot x)} )' = -1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \]
+
+Из здравого смысла следует:
+\[( \cos{(2 \cdot x)}  \cdot 2)' = -1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \cdot 2 \]
+
+Советские сперматозоиды установили, что:
+\[( \cos{(2 \cdot x)}  \cdot 2 \cdot 2)' = -1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \cdot 2 \cdot 2 \]
+
+Очевидно (иначе тебе следует научиться думать!!!):
+\[(-1 \cdot  \cos{(2 \cdot x)}  \cdot 2 \cdot 2)' = -1 \cdot -1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \cdot 2 \cdot 2 \]
+
+Школьникам известно:
+\[(-1 \cdot  \cos{(2 \cdot x)}  \cdot 2 \cdot 2 \cdot 2)' = -1 \cdot -1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \cdot 2 \cdot 2 \cdot 2 \]
+
+\[ f^{(4)}(x) = -1 \cdot -1 \cdot  \sin{(2 \cdot x)}  \cdot 2 \cdot 2 \cdot 2 \cdot 2 + 0 \cdot ((-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0} ) + -1 \cdot ((-1 \cdot ( \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0}  + -1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{1}  + (-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{0}  + (-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{0}  + (-1 \cdot  \sin{( {x}^{2} )}  \cdot 2 \cdot  {x}^{1}  \cdot 2 \cdot  {x}^{1}  +  \cos{( {x}^{2} )}  \cdot 2 \cdot  {x}^{0} ) \cdot 2 \cdot  {x}^{0} ) \]
+
+\newpage
+Тогда разложение функции по Тейлору в точке $x_0$ имеет вид:
+
+\[g(x) = -1.19055 * (x-3)^0 + -0.55237 * (x-3)^1 + 16.5471 * (x-3)^2 + 19.0228 * (x-3)^3 + -41.5136 * (x-3)^4\]
+
+График разложение функции по Тейлору в точке $x_0$:
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}
+[
+	legend pos = north west,
+	xlabel = {$x$},
+	ylabel = {$f(x)$},
+	width = 300,
+	height = 300,
+	restrict x to domain=2:4,
+	restrict y to domain=-2:2,
+	grid = major,
+	enlargelimits=true,
+]
+\legend{
+	$f(x)$,
+	$f^{(0)}(x)$,
+	$f^{(1)}(x)$,
+	$f^{(2)}(x)$,
+	$f^{(3)}(x)$,
+	$f^{(4)}(x)$
+}\addplot[green, samples=750]{((sin(deg(((2)*(x)))))+(cos(deg(((x)^(2))))))};
+\addplot[red, samples=750]{-1.19055 * (x-3)^0};
+\addplot[yellow, samples=750]{-1.19055 * (x-3)^0 + -0.55237 * (x-3)^1};
+\addplot[black, samples=750]{-1.19055 * (x-3)^0 + -0.55237 * (x-3)^1 + 16.5471 * (x-3)^2};
+\addplot[blue, samples=750]{-1.19055 * (x-3)^0 + -0.55237 * (x-3)^1 + 16.5471 * (x-3)^2 + 19.0228 * (x-3)^3};
+\addplot[orange, samples=750]{-1.19055 * (x-3)^0 + -0.55237 * (x-3)^1 + 16.5471 * (x-3)^2 + 19.0228 * (x-3)^3 + -41.5136 * (x-3)^4};
+\end{axis}
+\end{tikzpicture}
+\caption{Разложение по Тейлору}
+\end{figure}
+\end{document}

@@ -9,6 +9,9 @@ const size_t MIN_SIZE_TABLE_VAR      = 15;
 const size_t MAX_LEN_NAME_VAR        = 10;
 const size_t MIN_SIZE_TOKENS_ARRAY   = 10;
 const size_t MAX_LEN_DEG             = 100;
+const size_t MAX_DEPTH_OF_TREE       = 9;
+const size_t SIZE_MATH_PHRASES       = 14;
+const size_t SIZE_COLORS             = 7;
 
 //-------------------------------------------
 
@@ -87,7 +90,9 @@ enum diff_error_t
 	ERROR_IN_GET_DEG  = 11,
 	ERROR_IN_GET_FUNC = 12,
 	ERROR_IN_GET_P    = 13,
-	ERROR_IN_GET_N    = 14
+	ERROR_IN_GET_N    = 14,
+
+	NOT_MEMORY_IN_COEFFICIENTS_IN_TAYLOR = 15
 };
 
 //--------------------------------------------------------------

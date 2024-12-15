@@ -6,25 +6,26 @@
 #include "table_of_var.h"
 #include "new_node.h"
 #include "delete_tree.h"
+#include "pdf_file.h"
 #include "operations_with_tree.h"
 
-#define change_node_(delete_branch, save_branch) \
-	delete_tree (node -> delete_branch); \
-                                    \
-	node -> delete_branch = NULL;               \
-                                           \
-	node_t* old_##save_branch = node -> save_branch;        \
-                                                \
-	node -> type  = old_##save_branch -> type;     \
-	node -> value = old_##save_branch -> value;   \
-                                                          \
+#define change_node_(delete_branch, save_branch)                      \
+	delete_tree (node -> delete_branch);                              \
+                                                                      \
+	node -> delete_branch = NULL;                                     \
+                                                                      \
+	node_t* old_##save_branch = node -> save_branch;                  \
+                                                                      \
+	node -> type  = old_##save_branch -> type;                        \
+	node -> value = old_##save_branch -> value;                       \
+                                                                      \
 	node -> left  = copy_tree (old_##save_branch -> left,  node);     \
 	node -> right = copy_tree (old_##save_branch -> right, node);     \
-                                                                     \
-	delete_tree (old_##save_branch);                                     \
-                                                                 \
-	count_of_simplification += 1;                                 \
-                                                                    \
+                                                                      \
+	delete_tree (old_##save_branch);                                  \
+                                                                      \
+	count_of_simplification += 1;                                     \
+                                                                      \
 	return count_of_simplification;
 
 #define dL_ create_derivate (node -> left) 
@@ -61,10 +62,15 @@
 
 #define LN_(right) create_new_node (OP, LN, NULL, right, NULL, __FILE__, __LINE__)
 
+#define dL_PDF_ create_derivate_with_write_in_pdf (pdf_file, node -> left, math_phrases, ptr_index_math_phrases) 
+
+#define dR_PDF_ create_derivate_with_write_in_pdf (pdf_file, node -> right, math_phrases, ptr_index_math_phrases) 
+
 static diff_error_t read_new_number_in_var    (table_t* table, size_t index);
 static bool         compare_doubles           (double num_1, double num_2);
 static size_t       simplify_numbers          (node_t* node);
 static size_t       simplify_neutral_elements (node_t* node);
+static size_t       max_value                 (size_t value_1, size_t value_2);
 
 //-------------------------------------------------------------------------------------------------------------------------
 
@@ -255,6 +261,11 @@ node_t* create_derivate (node_t* node)
 
 					// printf ("quantity_vars_left  = %ld\n", quantity_vars_left);
 					// printf ("quantity_vars_right = %ld\n", quantity_vars_right);
+
+					if (quantity_vars_left == 0 && quantity_vars_right == 0)
+					{
+						return NUM_(0);
+					}
 
 					if (quantity_vars_left == 0)
 					{
@@ -465,5 +476,122 @@ static bool compare_doubles (double num_1, double num_2)   //true if num_1 == nu
 	else {return false;}
 }
 
-//здесь был саня 
+size_t count_depth_of_tree (node_t* node)
+{
+	if (node == NULL) {return 0;}
+
+	size_t depth_of_tree = max_value (count_depth_of_tree (node -> left), count_depth_of_tree (node -> right));
+
+	return depth_of_tree + 1;
+}
+
+static size_t max_value (size_t value_1, size_t value_2)
+{
+	if (value_1 > value_2) {return value_1;}
+
+	return value_2;
+}
+
+node_t* create_derivate_with_write_in_pdf (FILE* pdf_file, node_t* node, const char** math_phrases, size_t* ptr_index_math_phrases)
+{
+	assert (pdf_file);
+	assert (math_phrases);
+	assert (ptr_index_math_phrases);
+
+	if (node == NULL) {return NULL;}
+
+	node_t* diff_node = NULL;
+
+	size_t depth_of_tree = count_depth_of_tree (node);
+	
+	switch (node -> type)
+	{
+		case VAR: diff_node = NUM_(1); break;
+		case NUM: diff_node = NUM_(0); break;
+		
+		case OP:
+		{
+			switch ((node ->value).value_op)
+			{
+				case ADD:  diff_node = ADD_(dL_PDF_, dR_PDF_);                                             break;
+				case SUB:  diff_node = SUB_(dL_PDF_, dR_PDF_);                                             break;
+				case MUL:  diff_node = ADD_(MUL_(dL_PDF_, cR_), MUL_(cL_, dR_PDF_));                       break;
+				case DIV:  diff_node = DIV_(SUB_(MUL_(dL_PDF_, cR_), MUL_(cL_, dR_PDF_)), MUL_(cR_, cR_)); break;
+				case SIN:  diff_node = MUL_(COS_(cR_), dR_PDF_);			  						   	   break;
+				case COS:  diff_node = MUL_(NUM_(-1), MUL_(SIN_(cR_), dR_PDF_));                       	   break;				
+				case SH:   diff_node = MUL_(CH_(cR_), dR_PDF_);			                                   break;
+				case CH:   diff_node = MUL_(SH_(cR_), dR_PDF_);                                            break;
+				case SQRT: diff_node = DIV_(dR_PDF_, MUL_(NUM_(2), SQRT_(cR_)));                           break;
+				case LN:   diff_node = DIV_(dR_PDF_, cR_); 											       break; 
+
+				case LOG:
+				{
+					size_t quantity_vars_left  = 0;
+
+					count_vars (node -> left, &quantity_vars_left);
+
+					if (quantity_vars_left == 0) diff_node = DIV_(dR_PDF_, MUL_(LN_(cL_), cR_));
+
+					else diff_node = DIV_(SUB_(DIV_(MUL_(dR_PDF_, LN_(cL_)),cR_), DIV_(MUL_(dL_PDF_, LN_(cR_)), cL_)) , DEG_(LN_(cL_), NUM_(2)));
+
+					break;
+				}
+
+				case DEG: 
+				{
+					size_t quantity_vars_left  = 0;
+					size_t quantity_vars_right = 0;
+
+					count_vars (node -> left, &quantity_vars_left);
+					count_vars (node -> right, &quantity_vars_right);
+
+					// printf ("quantity_vars_left  = %ld\n", quantity_vars_left);
+					// printf ("quantity_vars_right = %ld\n", quantity_vars_right);
+
+					if (quantity_vars_left == 0 && quantity_vars_right == 0) diff_node = NUM_(0);
+
+					else if (quantity_vars_left == 0) diff_node = MUL_(DEG_(cL_, cR_), LN_(cL_));
+					
+					else if (quantity_vars_right == 0) diff_node = MUL_(MUL_(cR_, dL_PDF_), DEG_(cL_, SUB_(cR_, NUM_(1))));
+					
+					else diff_node = MUL_(DEG_(cL_, cR_), ADD_(MUL_(dR_PDF_, LN_(cL_)), MUL_(cR_, DIV_(dL_PDF_, cL_))));
+					
+					break;
+				}
+			
+				default:
+				{
+					printf ("Not find operation = %d", (node -> value).value_op);
+					return NULL;
+				}
+			}
+
+			if (depth_of_tree <= MAX_DEPTH_OF_TREE)
+			{
+				fprintf (pdf_file, "%s", math_phrases[(*ptr_index_math_phrases) % (SIZE_MATH_PHRASES - 1)]);
+
+				(*ptr_index_math_phrases) += 1;
+
+				fprintf (pdf_file, "\\[(");
+				write_node_in_pdf  (pdf_file, node);
+
+				fprintf (pdf_file, ")' = ");
+
+				simplify_tree (diff_node);
+			
+				write_tree_in_pdf  (pdf_file, diff_node);
+			}
+
+			break;
+		}
+
+		default:
+		{
+			printf ("type = %d not find\n", node -> type);
+			return NULL;
+		}
+	}	
+
+	return diff_node;
+}
 

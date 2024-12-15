@@ -37,7 +37,10 @@ diff_error_t dump_tree (node_t* node, char* str_for_system, size_t* ptr_index_pi
 
 	fprintf (diff_html, "---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 						"<img src=\"pictures/diff_%c%c%c%c.svg\" style=\"width: 100%%\">\n", 
-						str_for_system[INDEX_NUMBER_OF_PICTURE + 0], str_for_system[INDEX_NUMBER_OF_PICTURE + 1], str_for_system[INDEX_NUMBER_OF_PICTURE + 2], str_for_system[INDEX_NUMBER_OF_PICTURE + 3]);
+						str_for_system[INDEX_NUMBER_OF_PICTURE + 0], 
+						str_for_system[INDEX_NUMBER_OF_PICTURE + 1], 
+						str_for_system[INDEX_NUMBER_OF_PICTURE + 2], 
+						str_for_system[INDEX_NUMBER_OF_PICTURE + 3]);
 
 	*ptr_index_picture += 1;
 	size_t copy_index = *ptr_index_picture;
@@ -66,13 +69,17 @@ static diff_error_t print_edge (node_t* node, FILE* file_diff)
 	{
 		case NUM:
 		{
-			fprintf (file_diff, "node_%p [shape=record, label = \"{%lg| {type = %d (NUM) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"blue\"]\n\n\t", node, (node -> value).value_num, node -> type, node -> left, node, node -> parent, node -> right);
+			fprintf (file_diff, "node_%p [shape=record, label = \"{%lg| {type = %d (NUM) | left = %p | node = %p | parent = %p | right = %p}}\" "
+				                "style=\"filled\",fillcolor=\"blue\"]\n\n\t", 
+								node, (node -> value).value_num, node -> type, node -> left, node, node -> parent, node -> right);
 			break;
 		}
 
 		case VAR:
 		{
-			fprintf (file_diff, "node_%p [shape=record, label = \"{%s| {type = %d (VAR) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"yellow\"]\n\n\t", node, (node -> value).value_var, node -> type, node -> left, node, node -> parent, node -> right);
+			fprintf (file_diff, "node_%p [shape=record, label = \"{%s| {type = %d (VAR) | left = %p | node = %p | parent = %p | right = %p}}\" " 
+			                    "style=\"filled\",fillcolor=\"yellow\"]\n\n\t", 
+								node, (node -> value).value_var, node -> type, node -> left, node, node -> parent, node -> right);
 			break;
 		}
 
@@ -102,7 +109,9 @@ static diff_error_t print_edge (node_t* node, FILE* file_diff)
 				}
 			}
 
-			fprintf (file_diff, "node_%p [shape=record, label = \"{%s| {type = %d (OP) | left = %p | node = %p | parent = %p | right = %p}}\" style=\"filled\",fillcolor=\"#BDEF9E\"]\n\n\t", node, name_operation, node -> type, node -> left, node, node -> parent, node -> right);
+			fprintf (file_diff, "node_%p [shape=record, label = \"{%s| {type = %d (OP) | left = %p | node = %p | parent = %p | right = %p}}\" "
+								"style=\"filled\",fillcolor=\"#BDEF9E\"]\n\n\t", 
+								node, name_operation, node -> type, node -> left, node, node -> parent, node -> right);
 			break;
 		}
 

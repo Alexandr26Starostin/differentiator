@@ -21,21 +21,20 @@ static diff_error_t lexical_analysis 	   (char* str_formula, tokens_array* token
 static diff_error_t create_tokens    	   (tokens_array* tokens);
 static diff_error_t delete_tokens    	   (tokens_array* tokens);
 static diff_error_t realloc_tokens         (tokens_array* tokens);
-static diff_error_t dump_tokens            (tokens_array* tokens);
+       diff_error_t dump_tokens            (tokens_array* tokens);
 static bool         find_word_in_operation (char* word, tokens_array* tokens);
 
-#define READ_FUNC_IN_GET_FUNC_(operation)                              \
-	if ((tokens -> tokens_array)[*ptr_index].value.value_op == operation)       \
-	{                                                                           \
-		(*ptr_index)++;                                                         \
-																				\
- 		diff_error_t status = get_p (tokens, ptr_index, &new_node);                \
-		if (status) {return status;}                                            \
-                                                                                \
-		*ptr_node = create_new_node (OP, operation, NULL, new_node, NULL, __FILE__, __LINE__);                                           \
-		return status;                                                          \
+#define READ_FUNC_IN_GET_FUNC_(operation)                                      							\
+	if ((tokens -> tokens_array)[*ptr_index].value.value_op == operation)       						\
+	{                                                                           						\
+		(*ptr_index)++;                                                        			 				\
+																										\
+ 		diff_error_t status = get_p (tokens, ptr_index, &new_node);               						\
+		if (status) {return status;}                                            						\
+                                                                                                        \
+		*ptr_node = create_new_node (OP, operation, NULL, new_node, NULL, __FILE__, __LINE__);         	\
+		return status;                                                          						\
 	}
-
 
 static diff_error_t get_g    (tokens_array* tokens, size_t* ptr_index, node_t** node);
 static diff_error_t get_e    (tokens_array* tokens, size_t* ptr_index, node_t** node);
@@ -47,40 +46,41 @@ static diff_error_t get_n    (tokens_array* tokens, size_t* ptr_index, node_t** 
 
 //-------------------------------------------------------------------------------------------------------------
 
-#define NAME_OPERATION_(operation, name) \
+#define NAME_OPERATION_(operation, name) 		\
 	case operation:                             \
-	{                                      \
-		name_operation = name;   \
-		break;                               \
+	{                                      		\
+		name_operation = name;   				\
+		break;                               	\
 	}
 
-#define WRITE_NAME_OPERATION_(operation, name)     \
-	if (strcmp (name_operation, name) == 0)               \
-	{                                                 \
-		(node -> value).value_op = operation;               \
-		continue;                                    \
+#define WRITE_NAME_OPERATION_(operation, name)     		\
+	if (strcmp (name_operation, name) == 0)             \
+	{                                                   \
+		(node -> value).value_op = operation;           \
+		continue;                                    	\
 	}
 
 // static diff_error_t create_tree (node_t* node, char* str_formula, size_t* ptr_index_str, table_t* table);
 
 //-----------------------------------------------------------------------------------------------------
 
-diff_error_t print_formula (node_t* node)
+diff_error_t print_formula (FILE* pdf_file, node_t* node)
 {
 	assert (node);
+	assert (pdf_file);
 
 	diff_error_t status = NOT_ERROR;
 
 	if (node -> type == OP)
 	{
-		printf ("(");
+		fprintf (pdf_file, "(");
 	}
 
 	//-------------------------------------------------------------
 
 	if (node -> left != NULL)
 	{
-		status = print_formula (node -> left);
+		status = print_formula (pdf_file, node -> left);
 
 		if (status) {return status;}
 	}
@@ -91,13 +91,13 @@ diff_error_t print_formula (node_t* node)
 	{
 		case NUM:
 		{
-			printf ("(%lg)", (node -> value).value_num);
+			fprintf (pdf_file, "(%lg)", (node -> value).value_num);
 			break;
 		}
 
 		case VAR:
 		{
-			printf ("(%s)", (node -> value).value_var);
+			fprintf (pdf_file, "(%s)", (node -> value).value_var);
 			break;
 		}
 
@@ -111,8 +111,8 @@ diff_error_t print_formula (node_t* node)
 				NAME_OPERATION_(SUB,  "-");
 				NAME_OPERATION_(DIV,  "/");
 				NAME_OPERATION_(MUL,  "*");
-				NAME_OPERATION_(SIN,  "sin");
-				NAME_OPERATION_(COS,  "cos");
+				NAME_OPERATION_(SIN,  "sin(deg(");
+				NAME_OPERATION_(COS,  "cos(deg(");
 				NAME_OPERATION_(SH,   "sh");
 				NAME_OPERATION_(CH,   "ch");
 				NAME_OPERATION_(SQRT, "sqrt");
@@ -127,7 +127,7 @@ diff_error_t print_formula (node_t* node)
 				}
 			}
 
-			printf ("%s", name_operation);
+			fprintf (pdf_file, "%s", name_operation);
 
 			break;
 		}
@@ -144,7 +144,7 @@ diff_error_t print_formula (node_t* node)
 
 	if (node -> right != NULL)
 	{
-		status = print_formula (node -> right);
+		status = print_formula (pdf_file, node -> right);
 
 		if (status) {return status;}
 	}
@@ -153,7 +153,12 @@ diff_error_t print_formula (node_t* node)
 
 	if (node -> type == OP)
 	{
-		printf (")");
+		if ((node -> value).value_op == SIN || (node -> value).value_op == COS)
+		{
+			fprintf (pdf_file, "))");
+		}
+
+		fprintf (pdf_file, ")");
 	}
 
 	return NOT_ERROR;
@@ -180,7 +185,7 @@ diff_error_t read_formula (node_t** ptr_node, table_t* table)
 	status = lexical_analysis (str_formula, &tokens, table);
 	if (status) {return status;}
 
-	dump_tokens (&tokens);
+	//dump_tokens (&tokens);
 
 	size_t index = 0;
 
@@ -310,8 +315,6 @@ static diff_error_t delete_tokens (tokens_array* tokens)
 {
 	assert (tokens);
 
-	printf ("!\n");
-
 	free (tokens -> tokens_array);
 
 	tokens -> size_tokens      = 0;
@@ -361,7 +364,7 @@ static bool find_word_in_operation (char* word, tokens_array* tokens)
 	return false;
 }
 
-static diff_error_t dump_tokens (tokens_array* tokens)
+diff_error_t dump_tokens (tokens_array* tokens)
 {
 	assert (tokens);
 
